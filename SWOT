@@ -1,0 +1,43 @@
+
+# SWOT Analysis – UWC Cam Champion
+
+This document outlines the strengths, weaknesses, opportunities, and threats of our project.
+
+---
+
+## Strengths
+- Solves a real student problem, it tracks student academic performance
+- Includes useful features:
+  - Smart goal tracking  
+  - What-if simulator  
+  - Weakness detection  
+- Built using modern technologies such as Spring Boot, React, MySQL
+- Helps students improve academic performance
+- Scalable for future improvements meaning it will easily add new features or handle more users later
+
+---
+
+##  Weaknesses
+- First full-stack project, while we have limited experience
+- Some features may be complex to implement
+- Requires strong teamwork and coordination
+- Limited time due to academic workload
+- Database design still evolving
+
+---
+
+##  Opportunities
+- Can grow into a real product for students
+- Useful for portfolio and internships
+- Opportunity to learn full-stack development
+- Can add AI features in the future
+- Can expand into a mobile app
+
+---
+
+##  Threats
+- Team inactivity may slow progress
+- Technical challenges and bugs
+- Poor time management
+- Overcomplicating features
+- Existing study apps as competition
