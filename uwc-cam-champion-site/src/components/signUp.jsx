@@ -8,7 +8,11 @@ const component = () => {
     const [mail, setMail] = useState("");
     const [password, setPassword] = useState("");
 
+    // collect all data from usestate and send the information to the local server
     const handleSignUp = () => {};
+
+    // this method will compare 2 password to see if there match, return true for yes and false for no
+    const confirmPassword = () => {};
 
     return (
         <div>
@@ -27,7 +31,7 @@ const component = () => {
             <p className="text-white font-bold pt-6">Password</p>
             <CustomField type={"password"} placeholder={"Create a strong password"}/>
             <p className="text-white font-bold">Confirm Password</p>
-            <CustomField type={"password"} placeholder={"Create a strong password"}/>
+            <CustomField type={"password"} placeholder={"Re-type password"}/>
 
             <CustomButton text={"Create Account"}/>
 
