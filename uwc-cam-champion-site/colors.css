@@ -1,0 +1,139 @@
+/* =========================================================
+   🎨 PROJECT COLOR PALETTE
+   ========================================================= */
+
+/* =========================
+   MAIN COLORS
+   ========================= */
+
+/*
+Primary Dark     ⬛ → #0D2B2E
+Used for:
+- Active buttons
+- Sidebar icons
+- Navigation highlights
+- Dark UI sections
+*/
+
+/*
+Soft White        ⬜ → #F7F8FA
+Used for:
+- Main background
+- Overall page background
+*/
+
+/*
+Card White        🤍 → #FFFFFF
+Used for:
+- Cards
+- Containers
+- Popups
+- Panels
+*/
+
+/*
+Light Gray        ◻️ → #E9ECEF
+Used for:
+- Borders
+- Input backgrounds
+- Secondary sections
+*/
+
+/*
+Text Gray         🔘 → #6B7280
+Used for:
+- Paragraph text
+- Secondary text
+- Placeholder text
+*/
+
+/*
+Main Black        ⚫ → #111111
+Used for:
+- Headings
+- Important text
+- Titles
+*/
+
+
+/* =========================
+   ACCENT COLORS
+   ========================= */
+
+/*
+Bright Blue       🔵 → #1DA1F2
+Used for:
+- Charts
+- Completed tasks
+- Analytics
+*/
+
+/*
+Soft Orange       🟠 → #FF8A2A
+Used for:
+- Progress indicators
+- Notifications
+- Highlights
+*/
+
+/*
+Light Peach       🟧 → #F6E5DA
+Used for:
+- Soft card backgrounds
+- Task sections
+*/
+
+/*
+Purple Accent     🟣 → #8B3DFF
+Used for:
+- Invoice sections
+- Premium highlights
+- Progress bars
+*/
+
+/*
+Muted Orange      🟤 → #D98A5F
+Used for:
+- Secondary graph lines
+- Extra UI accents
+*/
+
+
+/* =========================
+   BACKGROUND GRADIENT
+   ========================= */
+
+/*
+Gradient Start    🟠 → #E7A36D
+Gradient End      🔵 → #A8C6D8
+
+Example:
+background: linear-gradient(
+  to right,
+  #E7A36D,
+  #A8C6D8
+);
+*/
+
+
+/* =========================
+   CSS VARIABLES
+   ========================= */
+
+:root {
+    --primary-dark: #0D2B2E;
+    --soft-white: #F7F8FA;
+    --card-white: #FFFFFF;
+    --light-gray: #E9ECEF;
+    --text-gray: #6B7280;
+    --main-black: #111111;
+
+    --bright-blue: #1DA1F2;
+    --soft-orange: #FF8A2A;
+    --light-peach: #F6E5DA;
+    --purple-accent: #8B3DFF;
+    --muted-orange: #D98A5F;
+
+    --gradient-start: #E7A36D;
+    --gradient-end: #A8C6D8;
+}
