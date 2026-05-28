@@ -1,6 +1,8 @@
 function ModuleDetail() {
     return (
-        <div></div>
+        <div className="min-h-screen w-full">
+            <h1>ModuleDetail</h1>
+        </div>
     )
 }
 
