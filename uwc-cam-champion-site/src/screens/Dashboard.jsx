@@ -1,6 +1,6 @@
 function DashBoard() {
     return (
-        <div className="min-h-screen w-full">
+        <div className="">
             <h1>DashBoard</h1>
         </div>
     )
