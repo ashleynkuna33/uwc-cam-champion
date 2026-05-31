@@ -7,7 +7,7 @@
     align-items: center;
     background-color: #9b9090;
     padding: 10px;
-    
+
 }
 
 .drop-down-menu{
@@ -60,3 +60,85 @@
 
 }
 
+/* The second section of the page*/
+.bar-line{
+
+   background-color:white;
+   width: 95%;
+   height: 6px;
+  
+   overflow: hidden;
+   border: 1px solid black;
+   border-radius: 4px;
+
+}
+
+.bar-fill{
+
+    height: 100%;
+    width: 0;
+    background-color:lightseagreen;
+    border-radius: 4px;
+    transition: width 8s ease;
+    display: block;
+}
+
+.progress-bar-container{
+
+    border:3px solid black;
+    width: 240px;
+    padding: 12px;
+    margin-left: 2px;
+    margin-top: 20px;
+    border-radius: 20px;
+ 
+    
+}
+
+.global-container{
+
+    display: flex;
+    gap: 13px;
+    align-items: center;
+}
+
+.left{
+
+    display: flex; 
+    gap: 13px;
+    align-items: center;
+}
+
+.right{
+
+    display: flex;
+    gap: 13px;
+    align-items: center;
+}
+
+
+.left-card{
+
+    border: 5px solid black;
+    width: 500px;
+    height: 450px;
+
+}
+
+
+.right-card{
+
+    border: 5px solid black;
+    width: 500px;
+    height: 450px;
+    
+}
+
+.cards-container{
+
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 30px;
+    padding: 30px;
+}
