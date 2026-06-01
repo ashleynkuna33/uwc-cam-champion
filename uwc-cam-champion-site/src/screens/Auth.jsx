@@ -53,7 +53,7 @@ function Auth() {
                 </div>
                 </div>
             </div>
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center pb-18">
                 <CustomButton text={"Continue without signing in"} icon={BiSolidChevronsDown}/>
             </div>
         </div>
