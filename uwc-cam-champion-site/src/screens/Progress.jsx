@@ -82,9 +82,9 @@ const stopDragExam =()=>{
     return (
         <>
 
-      <div  className="min-h-screen w-full">
+      <div  className=" min-h-screen w-full flex flex-col">
 
-        <div className="top-nav">
+        <div className="top-nav  flex items-center justify-between">
 
             <div className="left">
               <div className="heading">Semester one</div>
@@ -106,7 +106,7 @@ const stopDragExam =()=>{
        </div>
 
 
-    <div className="global-container">
+    <div className="global-container flex flex-col md:flex-row gap-4" >
 
      <div className="left">
 
@@ -177,7 +177,7 @@ const stopDragExam =()=>{
 
 
 
- <div className="cards-container">
+ <div className="cards-container flex flex-col md:flex-row gap-4">
 
   <div className="left-card">
     <div className="left-card-header">
