@@ -82,14 +82,24 @@
     display: block;
 }
 
+.progress-bar-heading{
+margin-bottom: 9px;
+}
+
+.progress-bar-heading span{
+    font-weight: bolder;
+    font-size: 35px;
+}
+
 
 .progress-bar-container{
 
     border:3px solid black;
-    width: 240px;
-    padding: 12px;
-    margin-left: 2px;
-    margin-top: 20px;
+    width: 300px;
+    padding: 20px;
+    margin-left: 14px;
+    height: 135px;
+    margin-top: 15px;
     border-radius: 20px;
  
     
@@ -98,21 +108,21 @@
 .global-container{
 
     display: flex;
-    gap: 13px;
+    gap: 3px;
     align-items: center;
 }
 
 .left{
 
     display: flex; 
-    gap: 13px;
+    gap: 8px;
     align-items: center;
 }
 
 .right{
 
     display: flex;
-    gap: 13px;
+    gap: 8px;
     align-items: center;
 }
 
@@ -139,11 +149,23 @@
     display: flex;
     gap: 20px;
     align-items: center;
-    margin-top: 30px;
     padding: 30px;
 }
 
 /* This is the third section of the page */
+
+
+.left-card{
+width: 49%;
+height:390px;
+padding: 24px 24px 24px 24px;
+
+}
+.right-card{
+    width: 49%;
+    height: 390px;
+
+}
 
 .left-card-header {
     display: flex;
@@ -175,6 +197,7 @@
     align-items: center;
     margin-left: 15px;
     margin-top: 25px;
+    margin-bottom: 18px;
 }
 
 .bar-header h5 {
