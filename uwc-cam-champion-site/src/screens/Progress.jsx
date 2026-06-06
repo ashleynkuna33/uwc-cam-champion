@@ -82,31 +82,33 @@ const stopDragExam =()=>{
     return (
         <>
 
-      <div  className="min-h-screen w-full">
+      <div  className=" min-h-screen w-full flex flex-col">
 
-        <div className="top-nav">
+        <div className="top-nav  flex items-center justify-between">
 
             <div className="left">
-              <div className="heading">Semester one</div>
+              <div className="heading">2026 calender year</div>
             </div>
 
-            <div>
+            
 
-                <div className="drop-down-menu" >
+            <div className="drop-down-menu" >
                     <button className="drop-down-btn">Modules</button>
+
                       <div className="drop-down-content">
                          <a href="#">module1</a>
                          <a href="#">module2</a>
                          <a href="#">module3</a>
                       </div>
              
-                </div>
             </div>
+
+            
 
        </div>
 
 
-    <div className="global-container">
+    <div className="global-container flex flex-col md:flex-row gap-4" >
 
      <div className="left">
 
@@ -149,6 +151,7 @@ const stopDragExam =()=>{
                 <p>REMAINING WEIGHT</p>
                 <span>30%</span>
             </div>
+
             <div className="bar-line" data-percent="30%">
                 <span style={{width:"30%"}}  className="bar-fill"></span>
             </div>
@@ -177,24 +180,32 @@ const stopDragExam =()=>{
 
 
 
- <div className="cards-container">
+ <div className="cards-container flex flex-col md:flex-row gap-4">
 
   <div className="left-card">
+
     <div className="left-card-header">
+
         <p className="left-card-header-text"><span>PROJECTION SLIDER</span></p>
         <span className="left-card-activities">pending 2</span>
+
     </div>
 
     <div className="left-card-progress-bar">
         <div className="process-bar-header">
 
             <div className="bar-header">
+
                 <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+
                     <h5>ASSIGNMENT 2</h5>
                     <span className="sl-wt">10% WEIGHT</span>
+
                 </div>
+
                 <span className="sl-num">{cam}%</span>
             </div>
+            
 
             <div className="left-bar-line" ref={barRef} onClick={camMark}>
                 <span style={{ width: `${cam}%` }}></span>
