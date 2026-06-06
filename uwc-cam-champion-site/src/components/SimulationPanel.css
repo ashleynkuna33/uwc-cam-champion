@@ -1,0 +1,221 @@
+
+.sim-panel {
+  width: 100%;
+  height: 100%;
+  padding: 18px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.sim-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sim-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.sim-subtitle {
+  font-size: 0.7rem;
+  color: #666;
+  margin: 0;
+}
+
+/* green "Simulation" pill */
+.sim-pill-sim {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* cyan weight pill */
+.sim-weight-pill {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: #cffafe;
+  color: #0e7490;
+  border: 1px solid #a5f3fc;
+  margin-left: 7px;
+  vertical-align: middle;
+}
+
+.sim-slider-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* range slider track */
+.sim-track-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sim-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    lightseagreen 0%,
+    lightseagreen var(--val, 83%),
+    #ddd var(--val, 83%),
+    #ddd 100%
+  );
+}
+
+.sim-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: lightseagreen;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px lightseagreen;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.sim-range::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.sim-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: lightseagreen;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+.sim-track-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: #999;
+}
+
+/* rows table */
+.sim-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sim-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  gap: 8px;
+}
+
+.sim-row-score {
+  font-size: 0.75rem;
+  color: #555;
+  flex: 1;
+}
+
+.sim-row-score strong {
+  color: #111;
+}
+
+.sim-row-cam {
+  font-size: 0.78rem;
+  font-weight: 700;
+  min-width: 68px;
+  text-align: right;
+}
+
+/* badge */
+.sim-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  min-width: 68px;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+/* grade colours */
+.sim-badge--distinction { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+.sim-badge--merit       { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+.sim-badge--pass        { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.sim-badge--fail        { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+.sim-row-cam.sim-badge--distinction { color: #c2410c; }
+.sim-row-cam.sim-badge--merit       { color: #a16207; }
+.sim-row-cam.sim-badge--pass        { color: #15803d; }
+.sim-row-cam.sim-badge--fail        { color: #dc2626; }
+
+/* footer */
+.sim-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f3f3f3;
+  border: 1px solid #ddd;
+  margin-top: 2px;
+}
+
+.sim-footer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sim-footer-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.sim-footer-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.sim-val-blue { color: #0369a1; }
+.sim-val-pink { color: #be185d; }
+
+.sim-footer-val.sim-badge--distinction { color: #c2410c; background: none; border: none; padding: 0; }
+.sim-footer-val.sim-badge--merit       { color: #a16207; background: none; border: none; padding: 0; }
+.sim-footer-val.sim-badge--pass        { color: #15803d; background: none; border: none; padding: 0; }
+.sim-footer-val.sim-badge--fail        { color: #dc2626; background: none; border: none; padding: 0; }

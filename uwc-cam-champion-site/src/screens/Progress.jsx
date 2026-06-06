@@ -1,5 +1,5 @@
-
 import "../components/Progress.css";
+import SimulationPanel from "../components/SimulationPanel";
 import { useRef, useState } from "react";
 
 function Progress() {
@@ -281,6 +281,11 @@ const stopDragExam =()=>{
               </div>
 
                
+
+            
+
+            <div className="right-card">
+                <SimulationPanel />
 
             </div>
         </div>
