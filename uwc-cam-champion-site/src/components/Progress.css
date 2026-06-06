@@ -95,8 +95,8 @@ margin-bottom: 9px;
 .progress-bar-container{
 
     border:3px solid black;
-    width: 300px;
-    padding: 20px;
+    width: 313px;
+    padding: 15px;
     margin-left: 14px;
     height: 135px;
     margin-top: 15px;
@@ -108,48 +108,33 @@ margin-bottom: 9px;
 .global-container{
 
     display: flex;
-    gap: 3px;
+    gap: 10px;
     align-items: center;
+    margin-left: 3px;
 }
 
 .left{
 
     display: flex; 
-    gap: 8px;
+    justify-content: space-evenly;
     align-items: center;
 }
 
 .right{
 
     display: flex;
-    gap: 8px;
+    justify-content: space-evenly;
     align-items: center;
 }
 
-
-.left-card{
-
-    border: 5px solid black;
-    width: 500px;
-    height: 450px;
-
-}
-
-
-.right-card{
-
-    border: 5px solid black;
-    width: 500px;
-    height: 450px;
-    
-}
 
 .cards-container{
 
     display: flex;
-    gap: 20px;
+    gap: 18px;
     align-items: center;
-    padding: 30px;
+  padding: 10px;
+    margin-left: 1px;
 }
 
 /* This is the third section of the page */
@@ -158,12 +143,20 @@ margin-bottom: 9px;
 .left-card{
 width: 49%;
 height:390px;
-padding: 24px 24px 24px 24px;
+padding: 9px;
+border: 1.5px solid black;
+border-radius: 15px;
+
+
 
 }
 .right-card{
     width: 49%;
     height: 390px;
+    border: 1.5px solid black;
+    border-radius: 13px;
+
+
 
 }
 
@@ -281,17 +274,20 @@ padding: 24px 24px 24px 24px;
 .bottom-status{
 
     display: flex;
-  
+    justify-content: space-between;
     align-items: center;
-}
-
-.bottom-section{
-
-    margin-top:30px;
+    margin-left: 30px;
+    margin-bottom: 30px;
     background-color: rgb(131, 181, 224);
-    padding: 8px;
     border-radius: 15px;
+    width: 500px;
+    padding:9px;
+
 }
+
+
+
+   
 
 .bottom-status input{
 
