@@ -66,6 +66,19 @@ function Progress() {
     window.removeEventListener("mouseup", stopDragExam);
   };
 
+
+  const [pendingModule ,setPendingModule]=useState([
+    {id:1,moduleName:"CSC 311",moduleStatus:"pending"},
+    {id:2,moduleName:"STA 311",moduleStatus:"completed"},
+    {id:3,moduleName:"MAT 311",moduleStatus:"pending"},
+     {id:4,moduleName:"MAT 312",moduleStatus:"pending"}
+  ]);
+
+
+  const pendingCount=(pendingModule)=>{
+   return pendingModule.filter( m=>m.moduleStatus ==="pending").length;
+  }
+
   return (
     <>
       <div className="min-h-screen w-full flex flex-col">
@@ -135,7 +148,7 @@ function Progress() {
               <p className="left-card-header-text">
                 <span>PROJECTION SLIDER</span>
               </p>
-              <span className="left-card-activities">2 pending</span>
+              <span className="left-card-activities">{pendingCount(pendingModule)} pending</span>
             </div>
 
             <div className="left-card-progress-bar">
