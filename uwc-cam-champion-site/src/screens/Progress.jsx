@@ -143,7 +143,7 @@ function Progress() {
         </div>
 
         <div className="cards-container flex flex-row gap-4">
-          <div className="left-card">
+          <div className="left-card bg-white">
             <div className="left-card-header">
               <p className="left-card-header-text">
                 <span>PROJECTION SLIDER</span>
@@ -247,7 +247,7 @@ function Progress() {
             </div>
           </div>
 
-          <div className="right-card">
+          <div className="right-card bg-white">
             <SimulationPanel />
           </div>
         </div>

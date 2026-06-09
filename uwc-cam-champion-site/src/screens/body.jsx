@@ -14,8 +14,8 @@ import { LuBookOpen } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CiGrid42 } from "react-icons/ci";
 import { FaUserGraduate } from "react-icons/fa";
-import { CiLogin as Login } from "react-icons/ci";
-import { CiLogout as Logout } from "react-icons/ci";
+import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
+import { TiThMenu } from "react-icons/ti";
 
 const MenuTab = ({ Icon, IconSize, Description, isActive, onClick }) => {
   return (
