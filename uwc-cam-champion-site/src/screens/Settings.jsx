@@ -1,6 +1,6 @@
 function Settings() {
     return (
-        <div className="min-h-screen w-full">
+        <div >
             <h1>Settings</h1>
         </div>
     )

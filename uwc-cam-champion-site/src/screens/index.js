@@ -5,3 +5,4 @@ export { default as Progress } from "./Progress";
 export { default as Reminders } from "./Reminders";
 export { default as Settings } from "./Settings";
 export { default as Tasks } from "./Tasks";
+export { default as Body } from "./body";

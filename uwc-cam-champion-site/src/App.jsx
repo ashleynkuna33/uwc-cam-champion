@@ -1,16 +1,11 @@
-import { AuthScreen, Dashboard, ModuleDetail, Progress, Reminders, Settings, Tasks } from "./screens";
+import { AuthScreen, Body} from "./screens";
 
 
 function App() {
   return (
     <>
     <AuthScreen />
-    <Dashboard />
-    <ModuleDetail />
-    <Tasks />
-    <Progress />
-    <Reminders />
-    <Settings />
+    <Body />
     </>
   )
 };

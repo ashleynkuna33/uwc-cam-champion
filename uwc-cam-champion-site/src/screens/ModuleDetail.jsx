@@ -1,7 +1,10 @@
 function ModuleDetail() {
     return (
-        <div className="min-h-screen w-full">
-            <h1>ModuleDetail</h1>
+        <div className="flex flex-col">
+            {/* header */}
+            <div>
+                <h1>Select Your Module</h1>
+            </div>
         </div>
     )
 }

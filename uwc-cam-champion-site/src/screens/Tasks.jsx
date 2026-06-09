@@ -1,105 +1,229 @@
-import { useState } from "react";
+import React, { useState } from "react";
 // icons
 import { LuFileText, LuPlus, LuPencil, LuCircleHelp, LuSettings } from "react-icons/lu";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
-import { CiSearch } from "react-icons/ci";
+import { MdDelete, MdOutlineQuiz, MdAssignment, MdOutlineScience, MdHistoryEdu } from "react-icons/md";
+import { CiSearch, CiCalendar, CiFolderOn } from "react-icons/ci";
 
-const MenuIcon = ({ name: Icon, size, title, onPress, disableHover = false, isActive = false }) => {
-    return (
-        <div
-            onClick={onPress}
-            className={`cursor-pointer p-2 rounded-xl transition-all
-                ${isActive ? "bg-black/10 text-black" : "text-gray-400"}
-                ${!disableHover && "hover:bg-black/10 hover:text-black"}`}
-        >
-            <Icon size={size} title={title}/>
+const assessmentsData = [
+  {
+    id: 1,
+    type: 'Quiz',
+    title: 'Database Fundamentals Quiz 3',
+    moduleCode: 'DBS402',
+    moduleName: 'Database Systems',
+    dueDate: 'May 29, 2026',
+    status: 'Past Due',
+    description: 'MCQ on normalization and relational algebra.',
+    weight: '10%',
+    categoryWeight: '25%',
+  },
+  {
+    id: 2,
+    type: 'Assignment',
+    title: 'Web Design Project - Milestone 2',
+    moduleCode: 'WPR201',
+    moduleName: 'Web Programming',
+    dueDate: 'June 15, 2026',
+    status: 'Due in 6 days',
+    description: 'Functional prototype using React.',
+    weight: '15%',
+    categoryWeight: '35%',
+  },
+  {
+    id: 3,
+    type: 'Practical',
+    title: 'Java Lab Exam 1 (Practical Test)',
+    moduleCode: 'COS311',
+    moduleName: 'Object-Oriented Prog',
+    dueDate: 'June 18, 2026',
+    status: 'Due in 9 days',
+    description: 'Data structures implementation under time constraints.',
+    weight: '20%',
+    categoryWeight: '25%',
+  },
+  {
+    id: 4,
+    type: 'Test',
+    title: 'Linear Algebra Midterm Exam',
+    moduleCode: 'STA331',
+    moduleName: 'Statistical Analysis',
+    dueDate: 'July 2, 2026',
+    status: 'Upcoming',
+    description: 'Full midterm coverage of matrices and linear systems.',
+    weight: '30%',
+    categoryWeight: '40%',
+  }
+];
+
+export const AssessmentItem = ({ item, Icon }) => {
+  const config = getTypeConfig(item.type);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1.2fr_1.2fr_1fr] items-center gap-6 p-5 border border-gray-200 rounded-2xl bg-white hover:shadow-md transition-shadow">
+      
+      {/* 1 */}
+      <div className="flex gap-4 items-start">
+        <div className={`p-3 rounded-xl shrink-0 ${config.bg} ${config.color}`}>
+          <Icon size={24} />
         </div>
-    );
+        <div>
+          <span className={`text-xs font-bold uppercase tracking-wider ${config.color}`}>
+            {item.type}
+          </span>
+          <h3 className="font-bold text-gray-900 text-base mt-0.5 leading-snug">
+            {item.title}
+          </h3>
+          <p className="text-gray-400 text-xs mt-1 leading-normal max-w-sm">
+            {item.description}
+          </p>
+        </div>
+      </div>
+
+      {/* 2 */}
+      <div className="space-y-1.5">
+        <span className="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Due Date</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1.5 text-gray-700 font-bold text-sm">
+            <CiCalendar size={18} className="text-gray-400" />
+            {item.dueDate}
+          </div>
+          <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wide ${getStatusBadgeStyle(item.status)}`}>
+            {item.status}
+          </span>
+        </div>
+      </div>
+
+      {/* 3*/}
+      <div className="space-y-1">
+        <span className="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Module</span>
+        <div className="flex items-center gap-1.5 text-gray-800 font-bold text-sm">
+          <CiFolderOn size={18} className="text-gray-400 shrink-0" />
+          <span>{item.moduleCode} <span className="text-gray-500 font-medium font-mono text-xs">({item.moduleName})</span></span>
+        </div>
+        <p className="text-[11px] text-gray-400 font-medium">
+          Task weight: <span className="font-bold text-gray-600">{item.weight}</span> of total module mark.
+        </p>
+      </div>
+
+      {/* 4*/}
+      <div className="flex flex-col sm:flex-row lg:flex-col items-stretch lg:items-end justify-center gap-2 w-full lg:w-auto ml-auto">
+        <div className="text-right lg:mb-1 px-1">
+          <span className="text-[11px] text-gray-400 font-medium block">
+            Category Component Weight
+          </span>
+          <span className="text-xs font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md mt-0.5 inline-block">
+            {item.categoryWeight} Course Total
+          </span>
+        </div>
+        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors cursor-pointer text-center">
+          Action Details
+        </button>
+      </div>
+
+    </div>
+  );
 };
 
-const SearchBar = ({placeholder = "Search Module"}) => {
+const SearchBar = ({ placeholder = "Search Module" }) => {
     return (
-        <div className="flex flex-row items-center border border-gray-400 rounded-2xl px-3 py-1 w-80">
+        <div className="flex flex-row items-center border border-gray-300 rounded-2xl px-3 w-full max-w-[320px] min-w-0 mx-4 mb-2 md: mb-2 bg-white shadow-sm focus-within:border-blue-500 transition-colors">
             <input 
+                type="text"
                 placeholder={placeholder} 
-                className="bg-transparent outline-none border-none text-sm text-black w-full text-xl"
+                className="bg-transparent outline-none border-none text-sm text-gray-700 w-full min-w-0 py-2"
             />
-            <div className="bg-black/20 rounded-2xl p-1.5 flex items-center justify-center">
-                <MenuIcon name={CiSearch} size={20} disableHover />
+            <div className="flex items-center justify-center text-gray-400 shrink">
+                <CiSearch size={20} />
             </div>
         </div>
     )
 };
 
-const UserHeader = ({ name = "Unknown", surname = "Unknown", isLogged = true }) => {
+const getTypeConfig = (type) => {
+  switch (type) {
+    case 'Quiz': 
+      return { icon: MdOutlineQuiz, color: 'text-sky-500', bg: 'bg-sky-500/10' };
+    case 'Assignment': 
+      return { icon: MdAssignment, color: 'text-amber-500', bg: 'bg-amber-500/10' };
+    case 'Practical': 
+      return { icon: MdOutlineScience, color: 'text-emerald-500', bg: 'bg-emerald-500/10' };
+    case 'Test': 
+      return { icon: MdHistoryEdu, color: 'text-indigo-500', bg: 'bg-indigo-500/10' };
+    default: 
+      return { icon: MdAssignment, color: 'text-gray-500', bg: 'bg-gray-500/10' };
+  }
+};
 
-    const handleLogin = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    const handleLogOut = () => {}
-
-    return (
-        <div className="flex flex-row gap-2 items-center justify-center border border-transparent rounded-3xl px-2 bg-black/20 cursor-pointer" onClick={() => !isLogged && handleLogin()}>
-            <MenuIcon name={FaRegUserCircle} size={22} disableHover />
-            {isLogged ? (
-                <div className="flex flex-row items-center gap-2">
-                    <div className="flex flex-col">
-                        <h1 className="text-sm font-bold">{name}</h1>
-                        <h1 className="text-sm font-bold">{surname}</h1>
-                    </div>
-                    <MenuIcon name={IoIosArrowDown} size={22} />
-                </div>
-            ) : (
-                <h1 className="text-sm font-bold">Log In</h1>
-            )}
-        </div>
-    );
+const getStatusBadgeStyle = (status) => {
+  if (status.includes('Past Due')) return 'bg-red-500 text-white';
+  if (status.includes('days')) return 'bg-amber-500 text-white';
+  return 'bg-blue-500 text-white';
 };
 
 function Tasks() {
-    const [tab, setTab] = useState("View All");
 
-    const handleSettings = () => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
+    const [activeFilter, setActiveFilter] = useState('All');
+    const categories = ['All', 'Assignments', 'Quizzes', 'Practicals', 'Tests'];
+
+    const filteredAssessments = assessmentsData.filter(item => {
+    if (activeFilter === 'All') return true;
+    if (activeFilter === 'Assignments') return item.type === 'Assignment';
+    if (activeFilter === 'Quizzes') return item.type === 'Quiz';
+    if (activeFilter === 'Practicals') return item.type === 'Practical';
+    if (activeFilter === 'Tests') return item.type === 'Test';
+    return true;
+  });
 
     return (
-        <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-blue-200 via-slate-200 to-orange-200">
+        <div className="flex flex-col">
             
             {/* header */}
-            <div className="bg-white/70 backdrop-blur-sm flex items-center justify-between px-2 border-b border-gray-200">
-                <h1 className="font-bold text-3xl text-gray-900">Modules</h1>
+            <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-[88px] md:h-18 border border-transparent rounded-2xl">
+                <h1 className="font-bold text-2xl text-gray-900 mr-4">Modules</h1>
                 <SearchBar />
-                <UserHeader />
             </div>
 
-            <div className="grid grid-cols-[auto_1fr] flex-1">
-                {/* the menu section */}
-                <div className="bg-white/70 border border-gray-200 rounded-2xl m-2 px-2 py-4 flex flex-col items-center justify-between w-14">
-                    
-                    {/* first icons group */}
-                    <div className="flex flex-col gap-2">
-                        <MenuIcon name={LuFileText} size={24} title={"View All"} isActive={tab === "View All"} onPress={() => setTab("View All")}/>
-                        <MenuIcon name={LuPlus} size={24} title={"Add Modules"} isActive={tab === "Add Modules"} onPress={() => setTab("Add Modules")}/>
-                        <MenuIcon name={LuPencil} size={24} title={"Edit Modules"} isActive={tab === "Edit Modules"} onPress={() => setTab("Edit Modules")}/>
-                        <MenuIcon name={MdDelete} size={24} title={"Delete Modules"} isActive={tab === "Delete Modules"} onPress={() => setTab("Delete Modules")}/>
-                    </div>
+            <h1 className="text-gray-500 my-2">Please note that the assessments shown here are intended to help you track your progress. Your lecturer's assessments, instructions, and deadlines remain the official source of information. Always double-check with your lecturer or course outline.</h1>
 
-                    {/* last group */}
-                    <div className="flex flex-col gap-2">
-                        <MenuIcon name={LuCircleHelp} size={24} title={"Help"} isActive={tab === "Help"} onPress={() => setTab("Help")}/>
-                        <MenuIcon name={LuSettings} size={24} title={"Settings"} onPress={handleSettings}/>
-                    </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-gray-50/60 p-1.5 rounded-2xl border border-gray-100">
+                <div className="flex flex-wrap gap-1">
+                {categories.map((cat) => (
+                    <button
+                    key={cat}
+                    onClick={() => setActiveFilter(cat)}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                        activeFilter === cat
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-gray-600 hover:bg-gray-200/50'
+                    }`}
+                    >
+                    {cat}
+                    </button>
+                ))}
                 </div>
-
-                {/* view section */}
-                <div className="bg-white/70 border border-gray-200 rounded-2xl p-6 m-2">
-                    <h1 className="text-gray-900">{tab}</h1>
+                <div className="text-sm font-medium text-gray-500 px-2">
+                Total Filtered: <span className="font-bold text-gray-800">{filteredAssessments.length}</span>
                 </div>
             </div>
+
+            <div className="space-y-4">
+                {filteredAssessments.length > 0 ? (
+                    filteredAssessments.map((item) => {
+                        const config = getTypeConfig(item.type);
+
+                        return (
+                            <AssessmentItem key={item.id} item={item} Icon={config.icon}/>
+                        );
+                    })
+                ) : (
+                    <div className="text-center p-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                    <p className="text-gray-400 font-medium text-sm">No assessments found matching this category filter.</p>
+                    </div>
+                )}
+            </div>
+
         </div>
     )
 };
