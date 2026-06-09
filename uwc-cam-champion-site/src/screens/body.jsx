@@ -11,7 +11,7 @@ import Tasks from './Tasks';
 // icons only imports
 import { FaPlus, FaChartLine, FaRegBell } from 'react-icons/fa6';
 import { LuBookOpen } from "react-icons/lu";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoClose } from "react-icons/io5";
 import { CiGrid42 } from "react-icons/ci";
 import { FaUserGraduate } from "react-icons/fa";
 import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
@@ -48,6 +48,12 @@ function Screen() {
         <div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-gradient-to-tr from-[#EBF1FA] to-[#F7FAFC]">
             {/* menu session */}
             <div className="bg-white p-4 m-4 border border-transparent rounded-2xl flex flex-col justify-between">
+                {/* button */}
+                <div className='flex flex-row justify-end'>
+                    <button className='flex items-center border cursor-pointer border-transparent rounded-3xl p-1.5 hover:bg-black/5 transition-all duration-300'>
+                        <IoClose size={26} />
+                    </button>
+                </div>
                 {/* logo */}
                 <div>
                     <h1>Logo</h1>
@@ -55,6 +61,7 @@ function Screen() {
 
                 {/* tabs */}
                 <div>
+
                     <MenuTab Icon={CiGrid42} IconSize={size_of_icons} Description={"Dashboard"} isActive={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")}/>
                     <MenuTab Icon={LuBookOpen} IconSize={size_of_icons} Description={"Module Detail"} isActive={activeTab === "Module Detail"} onClick={() => setActiveTab("Module Detail")}/>
                     <MenuTab Icon={FaPlus} IconSize={size_of_icons} Description={"Assessments"} isActive={activeTab === "Assessments"} onClick={() => setActiveTab("Assessments")}/>

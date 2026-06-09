@@ -10,7 +10,16 @@ function ModuleDetail() {
         <div className="flex flex-col">
             {/* header */}
             <div className="flex flex-col md:flex-row gap-2 border border-transparent rounded-xl p-4 bg-white justify-between">
-                <h1 className="font-bold text-xl">Select Your Module</h1>
+                <div className="flex flex-col md:flex-row items-center gap-4">
+                <h1 className="font-bold text-xl">Select Your Module:</h1>
+                {/* still needs work to be done, it should be dynamic */}
+                <select className="bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-2xl shadow-md focus:outline-none focus:border-blue-500 font-medium">
+                    <option value="dbs402">DBS402 Database Systems</option>
+                    <option value="wpr201">WPR201 Web Programming</option>
+                    <option value="sta331">STA331 Statistical Analysis</option>
+                </select>
+
+                </div>
                 <div className="flex flex-row gap-2">
                     <button className="border border-transparent rounded-2xl p-2 bg-blue-500 flex flex-row items-center gap-2 justify-center">
                         <FiPlus size={24} color="white"/>
@@ -26,8 +35,7 @@ function ModuleDetail() {
             {/* module metadata */}
             <div className="grid md:grid-cols-[1fr_auto] gap-4 my-4 items-center">
                 <div className="border border-transparent bg-white p-2">
-                    <div className="flex flex-row items-center gap-2 font-bold text-xl">
-                        <CiBoxList size={22}/>
+                    <div className="flex flex-row items-center gap-2 font-bold text-xl my-2">
                         <h1>Module Overview: </h1>
                         <p>Computer Science 311 (Operating Systems)</p>
                     </div>
