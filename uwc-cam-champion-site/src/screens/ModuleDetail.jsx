@@ -20,7 +20,7 @@ function ModuleDetail() {
                 </select>
 
                 </div>
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row gap-2 justify-center">
                     <button className="border border-transparent rounded-2xl p-2 bg-blue-500 flex flex-row items-center gap-2 justify-center">
                         <FiPlus size={24} color="white"/>
                         <h1 className="text-white font-bold">Add Module</h1>

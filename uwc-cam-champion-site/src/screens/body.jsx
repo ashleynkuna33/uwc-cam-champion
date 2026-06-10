@@ -16,8 +16,9 @@ import { CiGrid42 } from "react-icons/ci";
 import { FaUserGraduate } from "react-icons/fa";
 import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
 import { TiThMenu } from "react-icons/ti";
+import { MdOutlineMenuOpen } from "react-icons/md";
 
-const MenuTab = ({ Icon, IconSize, Description, isActive, onClick }) => {
+const MenuTab = ({ Icon, IconSize, Description = null, isActive, onClick }) => {
   return (
     <button 
       onClick={onClick}
@@ -28,16 +29,21 @@ const MenuTab = ({ Icon, IconSize, Description, isActive, onClick }) => {
         }`}
     >
       <Icon size={IconSize} />
+      { Description
+      ?
       <span className="font-bold">
         {Description}
       </span>
+      : null
+    }
+      
     </button>
   );
 };
 
 function Screen() {
 
-    const [menuExpanded, setMenuExpand] = useState(true);
+    const [menuExpanded, setMenuExpand] = useState(false);
     const [activeTab, setActiveTab] = useState("Dashboard");
     const [isLogged, setLogin] = useState(false);
     const size_of_icons = 22;
@@ -47,31 +53,41 @@ function Screen() {
     return (
         <div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-gradient-to-tr from-[#EBF1FA] to-[#F7FAFC]">
             {/* menu session */}
-            <div className="bg-white p-4 m-4 border border-transparent rounded-2xl flex flex-col justify-between">
+            <div className={`bg-white p-4 ${menuExpanded ? "p-4" : "p-2" } m-4 border border-transparent rounded-2xl flex flex-col justify-between transition-all duration-300`}>
                 {/* button */}
-                <div className='flex flex-row justify-end'>
-                    <button className='flex items-center border cursor-pointer border-transparent rounded-3xl p-1.5 hover:bg-black/5 transition-all duration-300'>
-                        <IoClose size={26} />
+                <div className={`flex flex-row ${menuExpanded ? "justify-end" : "justify-center"}`}>
+                    <button className='flex items-center border cursor-pointer border-transparent rounded-3xl p-1.5 hover:bg-black/5 transition-all duration-400' onClick={() => setMenuExpand(prev => !prev)}>
+                        {menuExpanded ? <IoClose size={26} /> : <MdOutlineMenuOpen size={26}/>}
+                        
                     </button>
                 </div>
                 {/* logo */}
-                <div>
-                    <h1>Logo</h1>
+                {menuExpanded 
+                ?
+                <div className='flex justify-center'>
+                    <h1 className='font-bold text-xl'>UWC CAM CHAMPION</h1>
                 </div>
+                :
+                null }
+                
 
                 {/* tabs */}
                 <div>
 
-                    <MenuTab Icon={CiGrid42} IconSize={size_of_icons} Description={"Dashboard"} isActive={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")}/>
-                    <MenuTab Icon={LuBookOpen} IconSize={size_of_icons} Description={"Module Detail"} isActive={activeTab === "Module Detail"} onClick={() => setActiveTab("Module Detail")}/>
-                    <MenuTab Icon={FaPlus} IconSize={size_of_icons} Description={"Assessments"} isActive={activeTab === "Assessments"} onClick={() => setActiveTab("Assessments")}/>
-                    <MenuTab Icon={FaChartLine} IconSize={size_of_icons} Description={"Progress & Projections"} isActive={activeTab === "Progress & Projections"} onClick={() => setActiveTab("Progress & Projections")}/>
-                    <MenuTab Icon={FaRegBell} IconSize={size_of_icons} Description={"Reminders"} isActive={activeTab === "Reminders"}
+                    <MenuTab Icon={CiGrid42} IconSize={size_of_icons} Description={menuExpanded ? "Dashboard" : null} isActive={activeTab === "Dashboard"} onClick={() => setActiveTab("Dashboard")}/>
+                    <MenuTab Icon={LuBookOpen} IconSize={size_of_icons} Description={menuExpanded ?"Module Detail" : null} isActive={activeTab === "Module Detail"} onClick={() => setActiveTab("Module Detail")}/>
+                    <MenuTab Icon={FaPlus} IconSize={size_of_icons} Description={menuExpanded ? "Assessments" : null} isActive={activeTab === "Assessments"} onClick={() => setActiveTab("Assessments")}/>
+                    <MenuTab Icon={FaChartLine} IconSize={size_of_icons} Description={menuExpanded ? "Progress & Projections" : null} isActive={activeTab === "Progress & Projections"} onClick={() => setActiveTab("Progress & Projections")}/>
+                        
+                    <div className={``}>
+                        <MenuTab Icon={FaRegBell} IconSize={size_of_icons} Description={menuExpanded ? "Reminders" : null} isActive={activeTab === "Reminders"}
                     onClick={() => setActiveTab("Reminders")}/>
-                    <MenuTab Icon={IoSettingsOutline} IconSize={size_of_icons} Description={"Settings"} isActive={activeTab === "Settings"} onClick={() => setActiveTab("Settings")}/>
+                        <MenuTab Icon={IoSettingsOutline} IconSize={size_of_icons} Description={menuExpanded ? "Settings" : null} isActive={activeTab === "Settings"} onClick={() => setActiveTab("Settings")}/>
+                    </div>
                 </div>
 
                 {/* user profile */}
+                {menuExpanded ? 
                 <div className='flex flex-row justify-between cursor-pointer transition-all duration-100 hover:bg-black/10 p-2 border border-transparent rounded-2xl'>
                     <div className='flex flex-row gap-2'>
                         <FaUserGraduate size={size_of_icons}/>
@@ -84,7 +100,9 @@ function Screen() {
                         <Login size={size_of_icons}/>}
                     </div>
 
-                </div>
+                </div> : <div></div>
+            }
+                
                 
             </div>
 

@@ -1,7 +1,9 @@
 function Reminders() {
     return (
         <div>
-            <h1>Reminders</h1>
+            <div>
+                <h1>Reminders</h1>
+            </div>
         </div>
     )
 }
