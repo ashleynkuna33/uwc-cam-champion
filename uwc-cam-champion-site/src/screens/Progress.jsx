@@ -18,6 +18,15 @@ function Progress() {
     setcam(Math.round(percent));
   };
 
+  {/* The update function */}
+
+const updateMark =(assessmentId,newMark)=>{
+
+  setPendingAssessment(prev => prev.map({...module,assessment: module.assessment.map( a => a.id ===assessmentId ? {...a, mark: newMark} :a)}))
+
+
+}
+
   const camMarkExam = (event) => {
     const bar = barRef.current.getBoundingClientRect();
     const clickX = event.clientX - bar.left;
@@ -67,17 +76,24 @@ function Progress() {
   };
 
 
-  const [pendingModule ,setPendingModule]=useState([
-    {id:1,moduleName:"CSC 311",moduleStatus:"pending"},
-    {id:2,moduleName:"STA 311",moduleStatus:"completed"},
-    {id:3,moduleName:"MAT 311",moduleStatus:"pending"},
-     {id:4,moduleName:"MAT 312",moduleStatus:"pending"}
-  ]);
+  const [pendingAssessment ,setPendingAssessment]=useState([{
+
+    id : 1,
+    moduleName: "MAT 311",
+    assessment:[{id :1, assessmentName:"Assignment 1", weight: 20, assessmentStatus: "completed" ,mark:0},
+                {id :2, assessmentName:"Tutorial 1", weight: 20, assessmentStatus: "completed" ,mark:0},
+                {id :3, assessmentName:"Assignment 2", weight: 20, assessmentStatus: "pending" ,mark:0},
+                {id :4, assessmentName:"Test 1", weight: 20, assessmentStatus: "pending" ,mark:0},
+                {id :5, assessmentName:"Tutorial 2", weight: 20,assessmentStatus: "pending" ,mark:0}
+    ]
+
+}]);
 
 
-  const pendingCount=(pendingModule)=>{
-   return pendingModule.filter( m=>m.moduleStatus ==="pending").length;
-  }
+  const pendingCount=pendingAssessment.flatMap( module=>module.assessment)
+                                      .filter(assessment =>assessment.assessmentStatus ==="pending")
+                                      .length;
+  
 
   return (
     <>
@@ -98,7 +114,7 @@ function Progress() {
 
         <div className="cards-container flex flex-row gap-4">
           <div className="left">
-            <div className="progress-bar-container">
+            <div className="progress-bar-container bg-white">
               <div className="progress-bar-heading">
                 <p>CURRENT CAM</p>
                 <span>63%</span>
@@ -108,7 +124,7 @@ function Progress() {
               </div>
             </div>
 
-            <div className="progress-bar-container">
+            <div className="progress-bar-container bg-white">
               <div className="progress-bar-heading">
                 <p>PROJECTED FINAL</p>
                 <span>79%</span>
@@ -120,17 +136,19 @@ function Progress() {
           </div>
 
           <div className="right">
-            <div className="progress-bar-container">
-              <div className="progress-bar-heading">
+            <div className="progress-bar-container bg-white">
+
+              <div className="progress-bar-heading ">
                 <p>REMAINING WEIGHT</p>
                 <span>30%</span>
               </div>
               <div className="bar-line" data-percent="30%">
                 <span style={{ width: "30%" }} className="bar-fill"></span>
               </div>
+              
             </div>
 
-            <div className="progress-bar-container">
+            <div className="progress-bar-container bg-white">
               <div className="progress-bar-heading">
                 <p>NEED FOR DINSTINCTION</p>
                 <span>80%</span>
@@ -139,6 +157,7 @@ function Progress() {
                 <span style={{ width: "80%" }} className="bar-fill"></span>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -148,7 +167,7 @@ function Progress() {
               <p className="left-card-header-text">
                 <span>PROJECTION SLIDER</span>
               </p>
-              <span className="left-card-activities">{pendingCount(pendingModule)} pending</span>
+              <span className="left-card-activities">{pendingCount} pending</span>
             </div>
 
             <div className="left-card-progress-bar">

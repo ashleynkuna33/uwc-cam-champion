@@ -35,36 +35,9 @@ export default function SimulationPanel() {
         <span className="sim-pill-sim">Simulation</span>
       </div>
 
-      <p className="sim-subtitle">
-        Final exam scenarios — Assignment 2 at <strong>{a2Score}%</strong>
-      </p>
+    
 
-      <div className="sim-slider-label-row">
-        <span>
-          Assignment 2
-          <span className="sim-weight-pill">10% WEIGHT</span>
-        </span>
-        <strong>{a2Score}%</strong>
-      </div>
-
-      <div className="sim-track-wrap">
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={1}
-          value={a2Score}
-          className="sim-range"
-          style={{ "--val": `${a2Score}%` }}
-          onChange={e => setA2Score(Number(e.target.value))}
-        />
-        <div className="sim-track-labels">
-          <span>0%</span>
-          <span>Pass 50%</span>
-          <span>Dist 75%</span>
-          <span>100%</span>
-        </div>
-      </div>
+      
 
       <div className="sim-table">
         {rows.map(r => (
@@ -78,20 +51,8 @@ export default function SimulationPanel() {
         ))}
       </div>
 
-      <div className="sim-footer">
-        <div className="sim-footer-item">
-          <span className="sim-footer-label">CURRENT</span>
-          <span className="sim-footer-val sim-val-blue">63%</span>
-        </div>
-        <div className="sim-footer-item">
-          <span className="sim-footer-label">PROJECTED</span>
-          <span className="sim-footer-val sim-val-pink">{projectedCAM}%</span>
-        </div>
-        <div className="sim-footer-item">
-          <span className="sim-footer-label">STATUS</span>
-          <span className={`sim-footer-val ${projGrade.cls}`}>{projGrade.label}</span>
-        </div>
-      </div>
+     
+    
     </div>
   );
 }
