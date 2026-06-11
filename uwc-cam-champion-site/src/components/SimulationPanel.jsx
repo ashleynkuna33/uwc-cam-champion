@@ -29,7 +29,7 @@ export default function SimulationPanel() {
   const projGrade = getGrade(projectedCAM);
 
   return (
-    <div className="sim-panel">
+    <div className="sim-panel bg-white rounded-2xl flex stretch">
       <div className="sim-header-row">
         <span className="sim-title">What if I score…</span>
         <span className="sim-pill-sim">Simulation</span>

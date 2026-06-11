@@ -180,7 +180,7 @@ function Tasks() {
         <div className="flex flex-col">
             
             {/* header */}
-            <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-[88px] md:h-18 border border-transparent rounded-2xl">
+            <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-[88px] md:h-18 rounded-2xl shadow-md">
                 <h1 className="font-bold text-2xl text-gray-900 mr-4">Modules</h1>
                 <SearchBar />
             </div>

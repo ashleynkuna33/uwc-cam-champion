@@ -2,6 +2,32 @@ import { useRef, useState } from "react";
 import "../components/Progress.css";
 import SimulationPanel from "../components/SimulationPanel";
 
+const ProgressBar = ({ title, percentage }) => {
+  const displayPercent = typeof percentage === 'number' ? `${percentage}%` : percentage;
+
+  return (
+    <div className="bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all hover:bg-indigo-600/10 duration-300 rounded-xl p-5 flex flex-col gap-3 w-full">
+      {/* Header  */}
+      <div className="flex flex-col md:flex-row items-baseline justify-between w-full">
+        <p className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+          {title}
+        </p>
+        <span className="text-lg font-bold text-indigo-600 tracking-tight">
+          {displayPercent}
+        </span>
+      </div>
+
+      {/* Progress Bar Container */}
+      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+        <div 
+          style={{ width: displayPercent }} 
+          className="bg-indigo-600 h-full rounded-full transition-all duration-500 ease-out"
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 function Progress() {
   let totalCam = 78;
   let statusResults = "merit";
@@ -17,6 +43,13 @@ function Progress() {
     const percent = Math.min(100, Math.max(0, (clickX / bar.width) * 100));
     setcam(Math.round(percent));
   };
+
+  const progressData = [
+    { id: 1, title: 'CURRENT CAM', percentage: '63%', position: 'left' },
+    { id: 2, title: 'PROJECTED FINAL', percentage: '79%', position: 'left' },
+    { id: 3, title: 'REMAINING WEIGHT', percentage: '30%', position: 'right' },
+    { id: 4, title: 'NEED FOR DISTINCTION', percentage: '80%', position: 'right' },
+  ];
 
   {/* The update function */}
 
@@ -97,73 +130,27 @@ const updateMark =(assessmentId,newMark)=>{
 
   return (
     <>
-      <div className="min-h-screen w-full flex flex-col">
-        <div className="top-nav flex items-center justify-between">
-          <div className="left">
-            <div className="heading">2026 calender year</div>
-          </div>
-          <div className="drop-down-menu">
-            <button className="drop-down-btn">Modules</button>
-            <div className="drop-down-content">
-              <a href="#">module1</a>
-              <a href="#">module2</a>
-              <a href="#">module3</a>
-            </div>
-          </div>
+      <div className="flex flex-col">
+        {/* header */}
+        <div className="flex flex-col md:flex-row items-center justify-between rounded-2xl bg-white shadow-md px-6 h-24 md:h-18">
+          <div className="font-bold text-xl">2026 Calender Year</div>
+          <select className="bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-2xl shadow-md hover:border-gray-600 transition-all duration-100 cursor-pointer focus:outline-none focus:border-blue-500 font-medium my-4">
+            <option value="">Module 1</option>
+            <option value="">Module 2</option>
+            <option value="">Module 3</option>
+          </select>
         </div>
 
-        <div className="cards-container flex flex-row gap-4">
-          <div className="left">
-            <div className="progress-bar-container bg-white">
-              <div className="progress-bar-heading">
-                <p>CURRENT CAM</p>
-                <span>63%</span>
-              </div>
-              <div className="bar-line" data-percent="90%">
-                <span style={{ width: "90%" }} className="bar-fill"></span>
-              </div>
-            </div>
-
-            <div className="progress-bar-container bg-white">
-              <div className="progress-bar-heading">
-                <p>PROJECTED FINAL</p>
-                <span>79%</span>
-              </div>
-              <div className="bar-line" data-percent="79%">
-                <span style={{ width: "79%" }} className="bar-fill"></span>
-              </div>
-            </div>
-          </div>
-
-          <div className="right">
-            <div className="progress-bar-container bg-white">
-
-              <div className="progress-bar-heading ">
-                <p>REMAINING WEIGHT</p>
-                <span>30%</span>
-              </div>
-              <div className="bar-line" data-percent="30%">
-                <span style={{ width: "30%" }} className="bar-fill"></span>
-              </div>
-              
-            </div>
-
-            <div className="progress-bar-container bg-white">
-              <div className="progress-bar-heading">
-                <p>NEED FOR DINSTINCTION</p>
-                <span>80%</span>
-              </div>
-              <div className="bar-line" data-percent="80%">
-                <span style={{ width: "80%" }} className="bar-fill"></span>
-              </div>
-            </div>
-
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 my-6">
+          {progressData.map(card => (
+            <ProgressBar
+            key={card.id} title={card.title} percentage={card.percentage} />
+          ))}
         </div>
 
-        <div className="cards-container flex flex-row gap-4">
-          <div className="left-card bg-white">
-            <div className="left-card-header">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch">
+          <div className="bg-white rounded-2xl flex-1 shadow-md">
+            <div className="flex flex-row justify-between px-4 py-2">
               <p className="left-card-header-text">
                 <span>PROJECTION SLIDER</span>
               </p>
@@ -246,7 +233,7 @@ const updateMark =(assessmentId,newMark)=>{
               </div>
             </div>
 
-            <div className="bottom-section">
+            <div className="flex flex-row p-4 bg-gray-200/80 rounded-bl-2xl rounded-br-2xl">
               
                 <div  className="bottom-status">
                   <p className="status-label">CURRENT</p>
@@ -266,7 +253,7 @@ const updateMark =(assessmentId,newMark)=>{
             </div>
           </div>
 
-          <div className="right-card bg-white">
+          <div className="flex-1 shadow-md">
             <SimulationPanel />
           </div>
         </div>
