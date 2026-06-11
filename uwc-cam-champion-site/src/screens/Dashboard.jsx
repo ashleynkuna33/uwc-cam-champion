@@ -108,7 +108,6 @@ export default function Dashboard() {
             <p>Welcome back, UWC Champion! 👋</p>
           </div>
         </section>
-
         <section className="top-cards">
           <article className="dashboard-card overview-card">
             <div className="card-header">
