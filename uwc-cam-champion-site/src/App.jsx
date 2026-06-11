@@ -1,11 +1,10 @@
-import { AuthScreen, Body} from "./screens";
-
+import { AuthScreen, Body } from "./screens";
 
 function App() {
   return (
     <>
-    <AuthScreen />
-    <Body />
+      <AuthScreen />
+      <Body />
     </>
   )
 };
