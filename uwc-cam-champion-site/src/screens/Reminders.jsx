@@ -1,5 +1,9 @@
 import { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
 import "../components/Reminders.css";
+
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 const reminders = [
   {
@@ -60,7 +64,7 @@ function ReminderCard({ reminder }) {
   const pct = Math.min((reminder.daysLeft / reminder.daysTotal) * 100, 100);
 
   return (
-    <div className="reminder-card">
+    <div className="flex flex-row gap-2 items-center my-2 border-b border-slate-200 pb-4">
       {/* Date */}
       <div className="reminder-date">
         <span className="reminder-date__month">{reminder.date.month}</span>
@@ -142,21 +146,28 @@ export default function Reminders() {
   const [selectedDay, setSelectedDay] = useState(TODAY_IDX);
 
   return (
-    <div className="reminders-page">
+    <div>
 
       {/* Header */}
-      <div className="reminders-header">
-        <h1 className="reminders-header__title">Reminders</h1>
-        <div className="reminders-header__avatar">👤</div>
+      <div className="bg-white flex flex-col md:flex-row items-center justify-between rounded-2xl p-4 shadow-md mb-4">
+        <h1 className="font-bold text-2xl">Reminders</h1>
+        <button className="flex flex-row p-2 bg-blue-400 rounded-2xl gap-2 transition-all duration-300 hover:bg-blue-600">
+          <IoMdAdd size={24} className="text-white"/>
+          <h1 className="font-bold text-white">Quick Add Task</h1>
+        </button>
       </div>
 
       {/* Deadline Hub Card */}
-      <div className="hub-card">
-        <div className="hub-card__header">
-          <h2 className="hub-card__title">Interactive Deadline Hub</h2>
-          <div className="hub-card__nav">
-            <button className="nav-btn">{"<"}</button>
-            <button className="nav-btn">{">"}</button>
+      <div className="p-4 bg-white rounded-2xl">
+        <div className="flex flex-row items-center justify-between mb-4">
+          <h2 className="font-bold text-xl">Interactive Deadline Hub</h2>
+          <div className="flex flex-row gap-2">
+            <button className="p-2 rounded-xl bg-gray-300 transition-all duration-200 hover:bg-gray-400">
+              <IoIosArrowBack size={20}/>
+            </button>
+            <button className="p-2 rounded-xl bg-gray-300 transition-all duration-200 hover:bg-gray-400">
+              <IoIosArrowForward size={20}/>
+            </button>
           </div>
         </div>
 
@@ -183,9 +194,9 @@ export default function Reminders() {
       </div>
 
       {/* FAB */}
-      <button className="fab">⚡ Quick Add Task</button>
+      {/* <button className="fab">⚡ Quick Add Task</button> */}
 
-      {/* Bottom Nav */}
+      {/* Bottom Nav
       <nav className="bottom-nav">
         {[
           { icon: "⊞", label: "Dashboard" },
@@ -199,7 +210,7 @@ export default function Reminders() {
             {active && <div className="bottom-nav__indicator" />}
           </button>
         ))}
-      </nav>
+      </nav> */}
     </div>
   );
 }
