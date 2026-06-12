@@ -1,0 +1,43 @@
+
+/**The top nav bar**/
+ 
+
+
+.card-content{
+
+    margin-top:50px;
+    padding: 3%;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    border-radius: 360px;
+}
+
+.setting-btn:hover{
+
+    background-color: rgb(85, 85, 235);
+    padding: 1%;
+    border-radius: 360px;
+    color: white;
+    transition: 0.5s ;
+    transition-duration: 0.5s;
+    
+
+}
+
+.setting-btn{
+
+    font-weight: bold;
+}
+
+
+.bottom-card{
+
+    margin-top: 50px;
+}
+
+.form-inputs{
+
+    border-radius: 1px solid black;
+}
+
