@@ -18,60 +18,76 @@ function Settings() {
 
             </div>
 
-            <div className="bottom-card bg-white">
+            
+            
+<div className="bottom-card bg-white">
 
-                <h5>Personal Information</h5>
+                
 
-                <form action="" className="setting-form-content">
+ <form action="" className="setting-form-content"> 
 
+    <h5 className="form-titles">Personal Information</h5>
+
+            <div className="form-first-section">
+
+                
                 <div>
                     <label htmlFor="text">First Name</label> <br />
-                    <input type="text" placeholder="Enter First Name"/>
+                    <input type="text" placeholder="John"/>
                 </div>
 
                 <div>
                     <label htmlFor="text">Last Name</label> <br />
-                    <input type="text" placeholder="Enter Last Name" />
+                    <input type="text" placeholder="Doe" />
                 </div>
+
+           
+            </div>
+
+        <div className="form-middle-section">
 
                 <div>
                     <label htmlFor="text">Email Address</label> <br />
-                    <input type="email" placeholder="Enter email address" className="" />
+                    <input type="email" placeholder="JohnDoe123@gmail.com" className="" />
                 </div>
 
                 
                 <div>
-                    <label htmlFor="text">Email Address</label> <br />
-                    <input type="email" placeholder="Enter email address" className="" />
+                    <label htmlFor="text">Phone Number</label> <br />
+                    <input type="tel" placeholder="0673445699" className="" />
                 </div>
 
+        </div>
 
-                 <h5>Personal Address</h5> 
-            <div> 
-                <div>
-                    <label htmlFor="text">First Name</label> <br />
-                    <input type="text" placeholder="Enter First Name"/>
-                </div>
 
-                <div>
-                    <label htmlFor="text">Last Name</label> <br />
-                    <input type="text" placeholder="Enter Last Name" />
-                </div>
+    <h5 className="form-titles">Personal Address</h5> 
+
+ <div className="form-bottom-section">
 
                 <div>
-                    <label htmlFor="text">Email Address</label> <br />
-                    <input type="email" placeholder="Enter email address" className="" />
+                    <label htmlFor="text">Country</label> <br />
+                    <input type="text" placeholder="Chile"/>
                 </div>
 
+                <div>
+                    <label htmlFor="text">City</label> <br />
+                    <input type="text" placeholder="New York" />
+                </div>
+               
+                <div>
+                    <label htmlFor="text">Address</label> <br />
+                    <input type="Address" placeholder="Enter address" className="" />
+                </div>
+
+                <div>
+                    <label htmlFor="number">Zip Code</label> <br />
+                    <input type="email"  className="" />
+                </div>
                 
-                <div>
-                    <label htmlFor="text">Email Address</label> <br />
-                    <input type="email" placeholder="Enter email address" className="" />
-                </div>
 
             </div>
 
-                </form>
+</form>
 
             </div>
         </div>
