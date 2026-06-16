@@ -21,11 +21,11 @@ function ModuleDetail() {
 
                 </div>
                 <div className="flex flex-row gap-2 justify-center">
-                    <button className="border border-transparent rounded-2xl p-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center">
+                    <button className="rounded-2xl p-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center">
                         <FiPlus size={24} color="white"/>
                         <h1 className="text-white font-bold">Add Module</h1>
                     </button>
-                    <button className="border border-transparent rounded-2xl p-2 bg-blue-500/10 hover:bg-blue-500/20 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center">
+                    <button className="rounded-2xl p-2 bg-blue-500/10 hover:bg-blue-500/20 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center">
                         <MdDeleteOutline size={24} color="red"/>
                         <h1 className="font-bold">Remove Module</h1>
                     </button>
@@ -74,7 +74,7 @@ function ModuleDetail() {
                 </div>
             </div>
 
-            <div className="border border-transparent rounded-2xl p-2 bg-white">
+            <div className="rounded-2xl p-2 bg-white">
                 <h1 className="font-bold my-2">Continuous Assessment Model (CAM) Calculations</h1>
                 <div className="flex flex-col md:flex-row justify-between">
                     <div>
