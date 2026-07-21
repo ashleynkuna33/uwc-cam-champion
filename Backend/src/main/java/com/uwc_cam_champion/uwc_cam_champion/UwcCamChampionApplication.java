@@ -1,13 +1,13 @@
-package com.uwc_cam_champion.uwc_champion;
+package com.uwc_cam_champion.uwc_cam_champion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UwcChampionApplication {
+public class UwcCamChampionApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(UwcChampionApplication.class, args);
+		SpringApplication.run(UwcCamChampionApplication.class, args);
 	}
 
 }
