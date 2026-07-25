@@ -1,12 +1,12 @@
 package com.uwc_cam_champion.uwc_cam_champion.camsummary;
 
-import com.uwc_cam_champion.uwc_cam_champion.users.User;
+import com.uwc_cam_champion.uwc_cam_champion.user.User;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cam_summaries")
-public class CamSummary {
+public class Cam {
 
     @Id
     @Column(name = "user_id")
@@ -26,10 +26,10 @@ public class CamSummary {
     @Column(name = "projected_cam")
     private BigDecimal projectedCam = BigDecimal.ZERO;
 
-    public CamSummary() {
+    public Cam() {
     }
 
-    public CamSummary(User user, BigDecimal actualCam, BigDecimal targetCam, BigDecimal projectedCam) {
+    public Cam(User user, BigDecimal actualCam, BigDecimal targetCam, BigDecimal projectedCam) {
         this.user = user;
         this.actualCam = actualCam;
         this.targetCam = targetCam;

@@ -1,5 +1,6 @@
 package com.uwc_cam_champion.uwc_cam_champion.module;
 
+import com.uwc_cam_champion.uwc_cam_champion.usermodules.UserModule;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
