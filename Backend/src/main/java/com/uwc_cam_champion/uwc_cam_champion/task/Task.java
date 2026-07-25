@@ -22,10 +22,10 @@ public class Task {
     @JoinColumn(name = "module_code", nullable = false)
     private ModuleInfo moduleInfo;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", insertable = false, updatable = false)
     private Integer userId;
 
-    @Column(name = "module_code", nullable = false, length = 12)
+    @Column(name = "module_code", insertable = false, updatable = false, length = 12)
     private String moduleCode;
 
     @Column(name = "type", nullable = false, length = 50)
@@ -63,25 +63,40 @@ public class Task {
         this.categoryWeight = categoryWeight;
     }
 
-    // getters and setters
+    // --- Getters & Setters ---
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public ModuleInfo getModuleInfo() { return moduleInfo; }
+    public void setModuleInfo(ModuleInfo moduleInfo) { this.moduleInfo = moduleInfo; }
+
     public Integer getUserId() { return userId; }
     public void setUserId(Integer userId) { this.userId = userId; }
+
     public String getModuleCode() { return moduleCode; }
     public void setModuleCode(String moduleCode) { this.moduleCode = moduleCode; }
+
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
     public LocalDate getDueDate() { return dueDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
     public Double getWeight() { return weight; }
     public void setWeight(Double weight) { this.weight = weight; }
+
     public Double getCategoryWeight() { return categoryWeight; }
     public void setCategoryWeight(Double categoryWeight) {
         this.categoryWeight = categoryWeight;

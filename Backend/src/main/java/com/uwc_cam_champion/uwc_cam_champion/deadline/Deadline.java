@@ -16,9 +16,6 @@ public class Deadline {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
-
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
@@ -33,8 +30,7 @@ public class Deadline {
 
     public Deadline() {}
 
-    public Deadline(Integer userId, LocalDate date, String title, String dueInfo, String priority) {
-        this.userId = userId;
+    public Deadline(LocalDate date, String title, String dueInfo, String priority) {
         this.date = date;
         this.title = title;
         this.dueInfo = dueInfo;
@@ -44,8 +40,6 @@ public class Deadline {
     // Getters and Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
     public String getTitle() { return title; }

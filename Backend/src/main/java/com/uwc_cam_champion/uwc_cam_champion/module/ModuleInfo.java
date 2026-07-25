@@ -27,14 +27,11 @@ public class ModuleInfo {
     @Column(name = "exam_date")
     private LocalDate examDate;
 
-    @OneToMany(mappedBy = "moduleInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserModule> userModules;
 
     public ModuleInfo() {
     }
 
-    public ModuleInfo(String code, String name, String title, Integer credits,
-                      String description, LocalDate examDate) {
+    public ModuleInfo(String code, String name, String title, Integer credits, String description, LocalDate examDate) {
         this.code = code;
         this.name = name;
         this.title = title;
@@ -91,11 +88,4 @@ public class ModuleInfo {
         this.examDate = examDate;
     }
 
-    public List<UserModule> getUserModules() {
-        return userModules;
-    }
-
-    public void setUserModules(List<UserModule> userModules) {
-        this.userModules = userModules;
-    }
 }
