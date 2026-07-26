@@ -1,5 +1,7 @@
 package com.uwc_cam_champion.uwc_cam_champion.task;
 
-public class TaskRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TaskRepository  extends JpaRepository<Task, Long >{
     
 }

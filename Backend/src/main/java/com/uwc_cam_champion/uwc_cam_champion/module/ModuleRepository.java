@@ -1,5 +1,7 @@
 package com.uwc_cam_champion.uwc_cam_champion.module;
 
-public class ModuleRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ModuleRepository  extends JpaRepository< ModuleInfo ,Long>{
     
 }

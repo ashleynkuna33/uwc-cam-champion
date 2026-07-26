@@ -1,5 +1,7 @@
 package com.uwc_cam_champion.uwc_cam_champion.user;
 
-public class UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
     
 }

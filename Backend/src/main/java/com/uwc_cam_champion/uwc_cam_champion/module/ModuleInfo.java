@@ -28,8 +28,7 @@ public class ModuleInfo {
     private LocalDate examDate;
 
 
-    public ModuleInfo() {
-    }
+   
 
     public ModuleInfo(String code, String name, String title, Integer credits, String description, LocalDate examDate) {
         this.code = code;
