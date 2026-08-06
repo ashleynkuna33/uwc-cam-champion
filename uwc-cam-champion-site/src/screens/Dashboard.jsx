@@ -105,7 +105,7 @@ export default function Dashboard() {
         <section className="dashboard-header">
           <div>
             <h3 className="small-label">Dashboard</h3>
-            <p>Welcome back, UWC Champion! 👋</p>
+            <p>Welcome back, UWC Champion!</p>
           </div>
         </section>
         <section className="top-cards">

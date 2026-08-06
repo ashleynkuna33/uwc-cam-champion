@@ -193,24 +193,6 @@ export default function Reminders() {
         </div>
       </div>
 
-      {/* FAB */}
-      {/* <button className="fab">⚡ Quick Add Task</button> */}
-
-      {/* Bottom Nav
-      <nav className="bottom-nav">
-        {[
-          { icon: "⊞", label: "Dashboard" },
-          { icon: "📅", label: "Calendar" },
-          { icon: "🔔", label: "Notifications", active: true },
-          { icon: "👤", label: "Profile" },
-        ].map(({ icon, label, active }) => (
-          <button key={label} className={`bottom-nav__item ${active ? "bottom-nav__item--active" : ""}`}>
-            <span className="bottom-nav__icon">{icon}</span>
-            <span className="bottom-nav__label">{label}</span>
-            {active && <div className="bottom-nav__indicator" />}
-          </button>
-        ))}
-      </nav> */}
     </div>
   );
 }

@@ -21,7 +21,7 @@ function Auth() {
 
             {/* Main content — grows to fill remaining space */}
             <div className="flex-1 flex items-center justify-center px-4 min-h-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl gap-6 h-full max-h-[580px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl gap-6 h-full max-h-145">
 
                     {/* Auth card */}
                     <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-2xl p-6 flex flex-col min-h-0">

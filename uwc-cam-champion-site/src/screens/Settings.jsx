@@ -28,7 +28,7 @@ export default function Settings () {
             {/* body -> consist of 2 grids */}
             <div className="grid md:grid-cols-3 grid-cols-1 gap-2">
                 <div className="col-span-2">
-                    {/* acocunt details */}
+                    {/* account details */}
                     <div className="border border-gray-400 rounded-xl p-4 mt-4 bg-white">
                         <h1 className="font-bold text-xl">Account Details</h1>
                         <div className="h-px w-full bg-gray-300 my-3"></div>

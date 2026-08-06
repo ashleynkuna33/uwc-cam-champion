@@ -6,9 +6,8 @@ function App() {
     <>
       <AuthScreen />
       <Body />
-
     </>
   )
-};
+}
 
 export default App;

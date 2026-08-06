@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 // icons
-import { LuFileText, LuPlus, LuPencil, LuCircleHelp, LuSettings } from "react-icons/lu";
-import { FaRegUserCircle } from "react-icons/fa";
-import { IoIosArrowDown } from "react-icons/io";
-import { MdDelete, MdOutlineQuiz, MdAssignment, MdOutlineScience, MdHistoryEdu } from "react-icons/md";
+import { MdOutlineQuiz, MdAssignment, MdOutlineScience, MdHistoryEdu } from "react-icons/md";
 import { CiSearch, CiCalendar, CiFolderOn } from "react-icons/ci";
 
 const assessmentsData = [
@@ -128,7 +125,7 @@ export const AssessmentItem = ({ item, Icon }) => {
 
 const SearchBar = ({ placeholder = "Search Module" }) => {
     return (
-        <div className="flex flex-row items-center border border-gray-300 rounded-2xl px-3 w-full max-w-[320px] min-w-0 mx-4 mb-2 md: mb-2 bg-white shadow-sm focus-within:border-blue-500 transition-colors">
+        <div className="flex flex-row items-center border border-gray-300 rounded-2xl px-3 w-full max-w-[320px] min-w-0 mx-4 mb-2 md: bg-white shadow-sm focus-within:border-blue-500 transition-colors">
             <input 
                 type="text"
                 placeholder={placeholder} 

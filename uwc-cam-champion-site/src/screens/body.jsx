@@ -15,7 +15,6 @@ import { IoSettingsOutline, IoClose } from "react-icons/io5";
 import { CiGrid42 } from "react-icons/ci";
 import { FaUserGraduate } from "react-icons/fa";
 import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
-import { TiThMenu } from "react-icons/ti";
 import { MdOutlineMenuOpen } from "react-icons/md";
 
 const MenuTab = ({ Icon, IconSize, Description = null, isActive, onClick }) => {
@@ -51,7 +50,7 @@ function Screen() {
     const handleLogin = () => {};
 
     return (
-        <div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-gradient-to-tr from-[#EBF1FA] to-[#F7FAFC]">
+        <div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
             {/* menu session */}
             <div className={`bg-white p-4 ${menuExpanded ? "p-4" : "p-2" } m-4 border border-transparent rounded-2xl flex flex-col justify-between transition-all duration-300`}>
                 {/* button */}
@@ -108,12 +107,12 @@ function Screen() {
 
             {/* body */}
             <div className='m-4 h-[calc(100vh-2rem)] overflow-y-auto min-h-0 scrollbar-thin scrollbar-thumb-black/20 hover:scrollbar-thumb-black/40 scrollbar-track-transparent'>
-                {activeTab == "Dashboard" && <DashBoard />}
-                {activeTab == "Module Detail" && <ModuleDetail />}
-                {activeTab == "Progress & Projections" && <Progress />}
-                {activeTab == "Assessments" && <Tasks />}
-                {activeTab == "Settings" && <Settings />}
-                {activeTab == "Reminders" && <Reminders />}
+                {activeTab === "Dashboard" && <DashBoard />}
+                {activeTab === "Module Detail" && <ModuleDetail />}
+                {activeTab === "Progress & Projections" && <Progress />}
+                {activeTab === "Assessments" && <Tasks />}
+                {activeTab === "Settings" && <Settings />}
+                {activeTab === "Reminders" && <Reminders />}
             </div>
         </div>
     )
