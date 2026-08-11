@@ -4,11 +4,22 @@ import { createContext, useState, useEffect, useContext } from "react";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+    // user object {id, name, surname, username, email, isEmailVerified, phone, active}
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+
 //   data
   const [modules, setModules] = useState(null);
+  const [deadlines, setDeadlines] = useState(null)
 
 //   user authentication and session management logic here
 
@@ -32,6 +43,10 @@ export const UserProvider = ({ children }) => {
   };
   
   let isLoggedIn = Boolean(user)
+
+//   data
+  
+  
 
   return (
     <UserContext.Provider value={{ user, isLoggedIn, loading, login, signUp, forgotPassword, handleContinueWithoutLogin }}>
