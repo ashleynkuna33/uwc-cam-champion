@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import "./Dashboard.css";
 
-export default function Dashboard() {
+export default function Dashboard({ onSomeAction }) {
 
   const stats = [
     { label: "In Progress", value: 14, color: "#ff9f1c" },
@@ -112,7 +112,7 @@ export default function Dashboard() {
           <article className="dashboard-card overview-card">
             <div className="card-header">
               <h3>Module Overview</h3>
-              <button aria-label="Open module overview">↗</button>
+              <button aria-label="Open module overview" onClick={() => onSomeAction("Module Detail")}>↗</button>
             </div>
 
             <div className="module-chart">
@@ -137,7 +137,7 @@ export default function Dashboard() {
           <article className="dashboard-card progress-card">
             <div className="card-header">
               <h3>Overall CAM Progress</h3>
-              <button aria-label="Open overall CAM progress">↗</button>
+              <button aria-label="Open overall CAM progress" onClick={() => onSomeAction("Progress & Projections")} >↗</button>
             </div>
 
             <div className="progress-circle">
@@ -159,7 +159,7 @@ export default function Dashboard() {
           <article className="dashboard-card quick-add-card">
             <div className="card-header">
               <h3>Quick Add</h3>
-              <button aria-label="Open quick add">↗</button>
+              <button aria-label="Open quick add" onClick={() => onSomeAction("Assessments")} >↗</button>
             </div>
 
             <button type="button" className="quick-add-circle" aria-label="Add module">
@@ -176,7 +176,9 @@ export default function Dashboard() {
         <section className="modules-section">
           <div className="section-header">
             <h2>My Modules</h2>
-            <a href="#">View all modules →</a>
+            <button onClick={() => onSomeAction("Module Detail")} className="font-bold text-blue-600 hover:underline transition-all duration-200 cursor-pointer">
+              View all modules
+            </button>
           </div>
 
           <div className="modules-grid">
@@ -211,7 +213,7 @@ export default function Dashboard() {
         <article className="summary-card">
           <div className="summary-card-header">
             <h3>Upcoming Deadlines</h3>
-            <a href="#">View calendar →</a>
+            <button onClick={() => onSomeAction("Reminders")} className="font-bold text-blue-600 hover:underline transition-all duration-200 cursor-pointer">View calendar</button>
           </div>
           {deadlines.map((deadline) => (
             <div className="deadline-item" key={deadline.date + deadline.title}>

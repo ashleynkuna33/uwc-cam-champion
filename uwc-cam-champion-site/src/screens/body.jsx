@@ -17,6 +17,8 @@ import { FaUserGraduate } from "react-icons/fa";
 import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
 import { MdOutlineMenuOpen } from "react-icons/md";
 
+
+// menu tab
 const MenuTab = ({ Icon, IconSize, Description = null, isActive, onClick }) => {
   return (
     <button 
@@ -107,7 +109,11 @@ function Screen() {
 
             {/* body */}
             <div className='m-4 h-[calc(100vh-2rem)] overflow-y-auto min-h-0 scrollbar-thin scrollbar-thumb-black/20 hover:scrollbar-thumb-black/40 scrollbar-track-transparent'>
-                {activeTab === "Dashboard" && <DashBoard />}
+                
+                {activeTab === "Dashboard" && (
+                    <DashBoard onSomeAction={setActiveTab} />
+                )}
+                
                 {activeTab === "Module Detail" && <ModuleDetail />}
                 {activeTab === "Progress & Projections" && <Progress />}
                 {activeTab === "Assessments" && <Tasks />}
