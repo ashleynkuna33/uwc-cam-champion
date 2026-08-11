@@ -24,10 +24,17 @@ export const UserProvider = ({ children }) => {
     try {} catch (error) {} finally {}
   }
 
-  const handleContinueWithoutLogin = () => {}
+  const handleContinueWithoutLogin = () => {
+    setUser({
+        username: "Guest",
+        isGuest: true
+    });
+  };
+  
+  let isLoggedIn = Boolean(user)
 
   return (
-    <UserContext.Provider value={{ user, loading, login, signUp, forgotPassword, handleContinueWithoutLogin }}>
+    <UserContext.Provider value={{ user, isLoggedIn, loading, login, signUp, forgotPassword, handleContinueWithoutLogin }}>
       {children}
     </UserContext.Provider>
   );

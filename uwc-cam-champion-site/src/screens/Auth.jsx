@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useUser } from "../context/UserContext";
 import { SignIn, SignUp, ForgotPassword } from "../components";
 import { Background1 } from "../assets";
 import CustomButton from "../components/CustomButton";
@@ -7,8 +8,13 @@ import { BiSolidChevronsDown } from "react-icons/bi";
 function Auth() {
     const [activeTab, setActiveTab] = useState("login");
 
+    const { user, loading } = useUser();
+    const isLoggedIn = Boolean(user);
+    const { handleContinueWithoutLogin } = useUser();
+
     return (
-        <div
+        !isLoggedIn ?
+        (<div
             className="h-screen w-full flex flex-col bg-fixed bg-cover bg-center overflow-hidden"
             style={{ backgroundImage: `url(${Background1})` }}
         >
@@ -65,9 +71,9 @@ function Auth() {
 
             {/* Footer button */}
             <div className="shrink-0 flex items-center justify-center py-4">
-                <CustomButton text={"Continue without signing in"} icon={BiSolidChevronsDown} />
+                <CustomButton text={"Continue without signing in"} onClick={handleContinueWithoutLogin} icon={BiSolidChevronsDown} />
             </div>
-        </div>
+        </div>) : null
     );
 }
 
