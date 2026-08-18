@@ -19,7 +19,9 @@ export const UserProvider = ({ children }) => {
 
 //   data
   const [modules, setModules] = useState(null);
-  const [deadlines, setDeadlines] = useState(null)
+  const [deadlines, setDeadlines] = useState(null);
+  const [cam, setCam] = useState(0);
+  const [tasks, setTasks] = useState(null);
 
 //   user authentication and session management logic here
 
@@ -45,8 +47,6 @@ export const UserProvider = ({ children }) => {
   let isLoggedIn = Boolean(user)
 
 //   data
-  
-  
 
   return (
     <UserContext.Provider value={{ user, isLoggedIn, loading, login, signUp, forgotPassword, handleContinueWithoutLogin }}>
