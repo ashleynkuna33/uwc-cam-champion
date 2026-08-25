@@ -11,7 +11,7 @@ import {
   getGrade,
   TONE_CLASSES,
 } from "../utils/grade";
-
+ 
 const ProgressBar = ({ title, percentage }) => {
   const displayPercent = typeof percentage === "number" ? `${percentage}%` : percentage;
  
@@ -35,7 +35,7 @@ const ProgressBar = ({ title, percentage }) => {
     </div>
   );
 };
-
+ 
  
 const AssessmentSlider = ({ trackRef, title, weight, value, onChangeStart, onSeek }) => (
   <div className="flex flex-col gap-2">
@@ -74,30 +74,30 @@ const AssessmentSlider = ({ trackRef, title, weight, value, onChangeStart, onSee
     </div>
   </div>
 );
-
-
-
+ 
+ 
+ 
 function Progress() {
   const camTrackRef = useRef(null);
   const examTrackRef = useRef(null);
-
+ 
   const [cam, setCam] = useState(90);
   const [exam, setExam] = useState(65);
-
+ 
   const [pendingAssessment, setPendingAssessment] = useState([
     {
       id: 1,
       moduleName: "MAT 311",
       assessment: [
-        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "completed", mark: 0 },
-        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "completed", mark: 0 },
-        { id: 3, assessmentName: "Assignment 2", weight: 20, assessmentStatus: "completed", mark: 0 },
-        { id: 4, assessmentName: "Test 1", weight: 20, assessmentStatus: "completed", mark: 0 },
-        { id: 5, assessmentName: "Tutorial 2", weight: 20, assessmentStatus: "completed", mark: 0 },
+        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "pending", mark: 0 },
+        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "pending", mark: 0 },
+        { id: 3, assessmentName: "Assignment 2", weight: 20, assessmentStatus: "pending", mark: 0 },
+        { id: 4, assessmentName: "Test 1", weight: 20, assessmentStatus: "pending", mark: 0 },
+        { id: 5, assessmentName: "Tutorial 2", weight: 20, assessmentStatus: "pending", mark: 0 },
       ],
     },
   ]);
-
+ 
   const updateMark = useCallback((assessmentId, newMark) => {
     setPendingAssessment((prev) =>
       prev.map((module) => ({
@@ -108,7 +108,7 @@ function Progress() {
       }))
     );
   }, []);
-
+ 
   const pendingCount = useMemo(
     () =>
       pendingAssessment
@@ -116,18 +116,18 @@ function Progress() {
         .filter((a) => a.assessmentStatus === "pending").length,
     [pendingAssessment]
   );
-
+ 
   const projectedFinal = useMemo(() => projectCam(cam, exam), [cam, exam]);
   const grade = useMemo(() => getGrade(projectedFinal), [projectedFinal]);
   const statusTone = TONE_CLASSES[grade.tone].text;
-
+ 
   const progressData = [
     { id: 1, title: "CURRENT CAM", percentage: CURRENT_CAM },
     { id: 2, title: "PROJECTED FINAL", percentage: projectedFinal },
     { id: 3, title: "REMAINING WEIGHT", percentage: REMAINING_WEIGHT },
     { id: 4, title: "NEED FOR DISTINCTION", percentage: DISTINCTION_THRESHOLD },
   ];
-
+ 
   const seekFromEvent = (event, trackRef, setter) => {
     const bar = trackRef.current.getBoundingClientRect();
     const clientX = event.touches ? event.touches[0].clientX : event.clientX;
@@ -135,7 +135,7 @@ function Progress() {
     const percent = Math.min(100, Math.max(0, (clickX / bar.width) * 100));
     setter(Math.round(percent));
   };
-
+ 
   const startDrag = (trackRef, setter) => (event) => {
     event.preventDefault();
     const onMove = (e) => seekFromEvent(e, trackRef, setter);
@@ -150,12 +150,11 @@ function Progress() {
     window.addEventListener("touchmove", onMove);
     window.addEventListener("touchend", onEnd);
   };
-
  
-  if (!pendingCount) {
+  if (!pendingCount || pendingCount === 0) {
     return <NullModuleProgress />;
   }
-
+ 
   return (
     <div className="flex flex-col">
       {/* header */}
@@ -167,14 +166,14 @@ function Progress() {
           <option value="">Module 3</option>
         </select>
       </div>
-
+ 
       {/* stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 my-6">
         {progressData.map((card) => (
           <ProgressBar key={card.id} title={card.title} percentage={card.percentage} />
         ))}
       </div>
-
+ 
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
         {/* projection slider card */}
         <div className="bg-white rounded-2xl flex-1 shadow-md flex flex-col min-h-[600px]">
@@ -186,7 +185,7 @@ function Progress() {
               {pendingCount} pending
             </span>
           </div>
-
+ 
           <div className="flex flex-col gap-8 px-4 pb-4 flex-1">
             <AssessmentSlider
               trackRef={camTrackRef}
@@ -196,7 +195,7 @@ function Progress() {
               onSeek={(e) => seekFromEvent(e, camTrackRef, setCam)}
               onChangeStart={startDrag(camTrackRef, setCam)}
             />
-
+ 
             <AssessmentSlider
               trackRef={examTrackRef}
               title="FINAL EXAM"
@@ -206,7 +205,7 @@ function Progress() {
               onChangeStart={startDrag(examTrackRef, setExam)}
             />
           </div>
-
+ 
           <div className="grid grid-cols-3 divide-x divide-slate-300/60 bg-slate-200/80 rounded-bl-2xl rounded-br-2xl">
             <div className="flex flex-col items-center gap-1 py-4 px-2">
               <p className="text-[11px] font-semibold text-slate-500 uppercase">Current</p>
@@ -222,7 +221,7 @@ function Progress() {
             </div>
           </div>
         </div>
-
+ 
         <div className="flex-1 shadow-md rounded-2xl overflow-hidden min-h-[600px]">
           <SimulationPanel
             assignment2Score={cam}
@@ -235,5 +234,5 @@ function Progress() {
     </div>
   );
 }
-
+ 
 export default Progress;
