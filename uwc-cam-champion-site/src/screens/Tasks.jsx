@@ -1,58 +1,8 @@
 import { useState } from "react";
+import { useUser } from "../context/UserContext";
 // icons
 import { MdOutlineQuiz, MdAssignment, MdOutlineScience, MdHistoryEdu } from "react-icons/md";
 import { CiSearch, CiCalendar, CiFolderOn } from "react-icons/ci";
-
-const assessmentsData = [
-  {
-    id: 1,
-    type: 'Quiz',
-    title: 'Database Fundamentals Quiz 3',
-    moduleCode: 'DBS402',
-    moduleName: 'Database Systems',
-    dueDate: 'May 29, 2026',
-    status: 'Past Due',
-    description: 'MCQ on normalization and relational algebra.',
-    weight: '10%',
-    categoryWeight: '25%',
-  },
-  {
-    id: 2,
-    type: 'Assignment',
-    title: 'Web Design Project - Milestone 2',
-    moduleCode: 'WPR201',
-    moduleName: 'Web Programming',
-    dueDate: 'June 15, 2026',
-    status: 'Due in 6 days',
-    description: 'Functional prototype using React.',
-    weight: '15%',
-    categoryWeight: '35%',
-  },
-  {
-    id: 3,
-    type: 'Practical',
-    title: 'Java Lab Exam 1 (Practical Test)',
-    moduleCode: 'COS311',
-    moduleName: 'Object-Oriented Prog',
-    dueDate: 'June 18, 2026',
-    status: 'Due in 9 days',
-    description: 'Data structures implementation under time constraints.',
-    weight: '20%',
-    categoryWeight: '25%',
-  },
-  {
-    id: 4,
-    type: 'Test',
-    title: 'Linear Algebra Midterm Exam',
-    moduleCode: 'STA331',
-    moduleName: 'Statistical Analysis',
-    dueDate: 'July 2, 2026',
-    status: 'Upcoming',
-    description: 'Full midterm coverage of matrices and linear systems.',
-    weight: '30%',
-    categoryWeight: '40%',
-  }
-];
 
 export const AssessmentItem = ({ item, Icon }) => {
   const config = getTypeConfig(item.type);
@@ -92,7 +42,7 @@ export const AssessmentItem = ({ item, Icon }) => {
         </div>
       </div>
 
-      {/* 3*/}
+      {/* 3 */}
       <div className="space-y-1">
         <span className="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Module</span>
         <div className="flex items-center gap-1.5 text-gray-800 font-bold text-sm">
@@ -104,7 +54,7 @@ export const AssessmentItem = ({ item, Icon }) => {
         </p>
       </div>
 
-      {/* 4*/}
+      {/* 4 */}
       <div className="flex flex-col sm:flex-row lg:flex-col items-stretch lg:items-end justify-center gap-2 w-full lg:w-auto ml-auto">
         <div className="text-right lg:mb-1 px-1">
           <span className="text-[11px] text-gray-400 font-medium block">
@@ -124,18 +74,18 @@ export const AssessmentItem = ({ item, Icon }) => {
 };
 
 const SearchBar = ({ placeholder = "Search Module" }) => {
-    return (
-        <div className="flex flex-row items-center border border-gray-300 rounded-2xl px-3 w-full max-w-[320px] min-w-0 mx-4 mb-2 md: bg-white shadow-sm focus-within:border-blue-500 transition-colors">
-            <input 
-                type="text"
-                placeholder={placeholder} 
-                className="bg-transparent outline-none border-none text-sm text-gray-700 w-full min-w-0 py-2"
-            />
-            <div className="flex items-center justify-center text-gray-400 shrink">
-                <CiSearch size={20} />
-            </div>
-        </div>
-    )
+  return (
+    <div className="flex flex-row items-center border border-gray-300 rounded-2xl px-3 w-full max-w-[320px] min-w-0 mx-4 mb-2 bg-white shadow-sm focus-within:border-blue-500 transition-colors">
+      <input 
+        type="text"
+        placeholder={placeholder} 
+        className="bg-transparent outline-none border-none text-sm text-gray-700 w-full min-w-0 py-2"
+      />
+      <div className="flex items-center justify-center text-gray-400 shrink">
+        <CiSearch size={20} />
+      </div>
+    </div>
+  );
 };
 
 const getTypeConfig = (type) => {
@@ -154,17 +104,19 @@ const getTypeConfig = (type) => {
 };
 
 const getStatusBadgeStyle = (status) => {
-  if (status.includes('Past Due')) return 'bg-red-500 text-white';
-  if (status.includes('days')) return 'bg-amber-500 text-white';
+  if (status?.includes('Past Due')) return 'bg-red-500 text-white';
+  if (status?.includes('days')) return 'bg-amber-500 text-white';
   return 'bg-blue-500 text-white';
 };
 
-function Tasks() {
+function Tasks({ onAddModuleClick }) {
+  const { tasks } = useUser();
+  const [activeFilter, setActiveFilter] = useState('All');
+  const categories = ['All', 'Assignments', 'Quizzes', 'Practicals', 'Tests'];
 
-    const [activeFilter, setActiveFilter] = useState('All');
-    const categories = ['All', 'Assignments', 'Quizzes', 'Practicals', 'Tests'];
+  const userTasks = tasks || [];
 
-    const filteredAssessments = assessmentsData.filter(item => {
+  const filteredAssessments = userTasks.filter(item => {
     if (activeFilter === 'All') return true;
     if (activeFilter === 'Assignments') return item.type === 'Assignment';
     if (activeFilter === 'Quizzes') return item.type === 'Quiz';
@@ -173,56 +125,67 @@ function Tasks() {
     return true;
   });
 
-    return (
-        <div className="flex flex-col">
-            
-            {/* header */}
-            <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-[88px] md:h-18 rounded-2xl shadow-md">
-                <h1 className="font-bold text-2xl text-gray-900 mr-4">Modules</h1>
-                <SearchBar />
-            </div>
+  return (
+    <div className="flex flex-col">
+      
+      {/* Header */}
+      <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-[88px] md:h-18 rounded-2xl shadow-md">
+        <h1 className="font-bold text-2xl text-gray-900 mr-4">Modules</h1>
+        <SearchBar />
+      </div>
 
-            <h1 className="text-gray-500 my-2">Please note that the assessments shown here are intended to help you track your progress. Your lecturer's assessments, instructions, and deadlines remain the official source of information. Always double-check with your lecturer or course outline.</h1>
+      <h1 className="text-gray-500 my-2">
+        Please note that the assessments shown here are intended to help you track your progress. Your lecturer's assessments, instructions, and deadlines remain the official source of information. Always double-check with your lecturer or course outline.
+      </h1>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-gray-50/60 p-1.5 rounded-2xl border border-gray-100">
-                <div className="flex flex-wrap gap-1">
-                {categories.map((cat) => (
-                    <button
-                    key={cat}
-                    onClick={() => setActiveFilter(cat)}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
-                        activeFilter === cat
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'text-gray-600 hover:bg-gray-200/50'
-                    }`}
-                    >
-                    {cat}
-                    </button>
-                ))}
-                </div>
-                <div className="text-sm font-medium text-gray-500 px-2">
-                Total Filtered: <span className="font-bold text-gray-800">{filteredAssessments.length}</span>
-                </div>
-            </div>
-
-            <div className="space-y-4">
-                {filteredAssessments.length > 0 ? (
-                    filteredAssessments.map((item) => {
-                        const config = getTypeConfig(item.type);
-
-                        return (
-                            <AssessmentItem key={item.id} item={item} Icon={config.icon}/>
-                        );
-                    })
-                ) : (
-                    <div className="text-center p-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
-                    <p className="text-gray-400 font-medium text-sm">No assessments found matching this category filter.</p>
-                    </div>
-                )}
-            </div>
-
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-gray-50/60 p-1.5 rounded-2xl border border-gray-100">
+        <div className="flex flex-wrap gap-1">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveFilter(cat)}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                activeFilter === cat
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-200/50'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
-    )
-};
+        <div className="text-sm font-medium text-gray-500 px-2">
+          Total Filtered: <span className="font-bold text-gray-800">{filteredAssessments.length}</span>
+        </div>
+      </div>
+
+      {/* Assessment List / Empty State */}
+      <div className="space-y-4">
+        {filteredAssessments.length > 0 ? (
+          filteredAssessments.map((item) => {
+            const config = getTypeConfig(item.type);
+
+            return (
+              <AssessmentItem key={item.id} item={item} Icon={config.icon} />
+            );
+          })
+        ) : (
+          <div className="text-center p-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+            <p className="text-gray-500 font-medium text-sm">
+              No task to show here,{" "}
+              <button 
+                onClick={onAddModuleClick}
+                className="text-blue-600 font-bold hover:underline cursor-pointer"
+              >
+                click here to add a module
+              </button>
+            </p>
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
 
 export default Tasks;

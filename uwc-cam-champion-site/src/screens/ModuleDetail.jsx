@@ -5,6 +5,8 @@ import { TbKeyframe } from "react-icons/tb";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import { LuBookOpen } from "react-icons/lu";
 
+
+
 function ModuleDetail() {
     return (
         <div className="flex flex-col">
@@ -17,6 +19,8 @@ function ModuleDetail() {
                     <option value="dbs402">DBS402 Database Systems</option>
                     <option value="wpr201">WPR201 Web Programming</option>
                     <option value="sta331">STA331 Statistical Analysis</option>
+
+                    {/* ma */}
                 </select>
 
                 </div>
