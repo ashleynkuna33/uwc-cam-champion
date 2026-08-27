@@ -77,3 +77,4 @@ export default function SimulationPanel({ assignment2Score = 90, examScore = 65 
     </div>
   );
 }
+

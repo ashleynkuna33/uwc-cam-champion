@@ -1,6 +1,6 @@
-
 import { useRef, useState, useCallback, useMemo } from "react";
 import SimulationPanel from "../components/SimulationPanel";
+import NullModuleProgress from "../screens/NullModuleProgress";
 import {
   CURRENT_CAM,
   ASSIGNMENT2_WEIGHT,
@@ -36,7 +36,7 @@ const ProgressBar = ({ title, percentage }) => {
   );
 };
  
-
+ 
 const AssessmentSlider = ({ trackRef, title, weight, value, onChangeStart, onSeek }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center justify-between">
@@ -75,10 +75,11 @@ const AssessmentSlider = ({ trackRef, title, weight, value, onChangeStart, onSee
   </div>
 );
  
+ 
+ 
 function Progress() {
   const camTrackRef = useRef(null);
   const examTrackRef = useRef(null);
- 
  
   const [cam, setCam] = useState(90);
   const [exam, setExam] = useState(65);
@@ -88,8 +89,8 @@ function Progress() {
       id: 1,
       moduleName: "MAT 311",
       assessment: [
-        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "completed", mark: 0 },
-        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "completed", mark: 0 },
+        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "pending", mark: 0 },
+        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "pending", mark: 0 },
         { id: 3, assessmentName: "Assignment 2", weight: 20, assessmentStatus: "pending", mark: 0 },
         { id: 4, assessmentName: "Test 1", weight: 20, assessmentStatus: "pending", mark: 0 },
         { id: 5, assessmentName: "Tutorial 2", weight: 20, assessmentStatus: "pending", mark: 0 },
@@ -97,7 +98,6 @@ function Progress() {
     },
   ]);
  
-
   const updateMark = useCallback((assessmentId, newMark) => {
     setPendingAssessment((prev) =>
       prev.map((module) => ({
@@ -116,7 +116,7 @@ function Progress() {
         .filter((a) => a.assessmentStatus === "pending").length,
     [pendingAssessment]
   );
-
+ 
   const projectedFinal = useMemo(() => projectCam(cam, exam), [cam, exam]);
   const grade = useMemo(() => getGrade(projectedFinal), [projectedFinal]);
   const statusTone = TONE_CLASSES[grade.tone].text;
@@ -128,7 +128,6 @@ function Progress() {
     { id: 4, title: "NEED FOR DISTINCTION", percentage: DISTINCTION_THRESHOLD },
   ];
  
-
   const seekFromEvent = (event, trackRef, setter) => {
     const bar = trackRef.current.getBoundingClientRect();
     const clientX = event.touches ? event.touches[0].clientX : event.clientX;
@@ -151,6 +150,10 @@ function Progress() {
     window.addEventListener("touchmove", onMove);
     window.addEventListener("touchend", onEnd);
   };
+ 
+  if (!pendingCount || pendingCount === 0) {
+    return <NullModuleProgress />;
+  }
  
   return (
     <div className="flex flex-col">
@@ -233,4 +236,3 @@ function Progress() {
 }
  
 export default Progress;
- 
