@@ -68,7 +68,8 @@ export const UserProvider = ({ children }) => {
     //     active
     // }
 
-    const [user, setUser] = useState(null);
+    //const [user, setUser] = useState(null);
+    const [user, setUser] = useState({ username: "Guest", isGuest: true });
     const [loading, setLoading] = useState(true);
 
     // User data

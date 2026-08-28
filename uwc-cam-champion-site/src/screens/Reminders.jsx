@@ -2,57 +2,29 @@ import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import "../components/Reminders.css";
 
-import { IoIosArrowBack } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useUser } from "../context/UserContext";
 
-const reminders = [
-  {
-    id: 1,
-    date: { day: 10, month: "Jun" },
-    icon: "📄",
-    iconLabel: "Assignment 1",
-    title: "Database Systems - Assignment 1",
-    dueIn: "Due in 3 days",
-    note: "Submit PDF",
-    checklist: ["Data Model Diagram", "SQL Queries", "Draft Report"],
-    priority: "High Priority",
-    priorityType: "high",
-    daysLeft: 3,
-    daysTotal: 107,
-  },
-  {
-    id: 2,
-    date: { day: 12, month: "Jun" },
-    icon: "🔬",
-    iconLabel: "Lab Report",
-    title: "Database Systems - Assignment 2",
-    dueIn: "Due in 5 days",
-    note: null,
-    checklist: [],
-    priority: "Medium Priority",
-    priorityType: "medium",
-    daysLeft: 5,
-    daysTotal: 107,
-  },
-  {
-    id: 3,
-    date: { day: 15, month: "Jun" },
-    icon: "❓",
-    iconLabel: "Quiz",
-    title: "Software Engineering - Midterm Project",
-    dueIn: "Due in 15 days",
-    note: null,
-    checklist: [],
-    priority: "Normal Priority",
-    priorityType: "normal",
-    daysLeft: 15,
-    daysTotal: 107,
-  },
-];
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const DATES = [16, 17, 18, 19, 20, 21, 22];
-const TODAY_IDX = 3;
+
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function getCurrentWeek() {
+  const today = new Date();
+  const currentDayIdx = today.getDay();
+
+  const sunday = new Date(today);
+  sunday.setDate(today.getDate() - currentDayIdx);
+
+  const week = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(sunday);
+    d.setDate(sunday.getDate() + i);
+    week.push(d.getDate());
+  }
+
+  return { dates: week, todayIdx: currentDayIdx };
+}
 
 function ReminderCard({ reminder }) {
   const [checked, setChecked] = useState(
@@ -143,7 +115,9 @@ function ReminderCard({ reminder }) {
 }
 
 export default function Reminders() {
-  const [selectedDay, setSelectedDay] = useState(TODAY_IDX);
+  const { dates, todayIdx } = getCurrentWeek();
+  const [selectedDay, setSelectedDay] = useState(todayIdx);
+  const { tasks } = useUser();
 
   return (
     <div>
@@ -173,21 +147,21 @@ export default function Reminders() {
 
         {/* Week strip */}
         <div className="week-strip">
-          {DAYS.map((day, i) => (
+          {DAY_NAMES.map((day, i) => (
             <button
               key={day}
               className={`week-day ${selectedDay === i ? "week-day--active" : ""}`}
               onClick={() => setSelectedDay(i)}
             >
               <span className="week-day__name">{day}</span>
-              <span className="week-day__date">{DATES[i]}</span>
+              <span className="week-day__date">{dates[i]}</span>
             </button>
           ))}
         </div>
 
         {/* Cards */}
         <div className="reminders-list">
-          {reminders.map((r) => (
+          {tasks.map((r) => (
             <ReminderCard key={r.id} reminder={r} />
           ))}
         </div>
