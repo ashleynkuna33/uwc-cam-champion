@@ -55,64 +55,6 @@ const TasksSampleData = [
 ];
 
 export const UserProvider = ({ children }) => {
-<<<<<<< HEAD
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  // Data
-  const [modules, setModules] = useState([]);
-  // const [tasks, setTasks] = useState([]);
-  const [deadlines, setDeadlines] = useState(null);
-  const [cam, setCam] = useState(0);
-  
-  // Initialized directly with sample data
-  const [tasks, setTasks] = useState(TasksSampleData);
-
-  // Auth logic
-  const login = async ({ username, password }) => {
-    try {} catch (error) {} finally {}
-  };
-
-  const signUp = async ({ firstname, surname, email, password }) => {
-    try {} catch (error) {} finally {}
-  };
-
-  const forgotPassword = async ({ email }) => {
-    try {} catch (error) {} finally {}
-  };
-
-  const handleContinueWithoutLogin = () => {
-    setUser({
-      username: "Guest",
-      isGuest: true
-    });
-  };
-  
-  let isLoggedIn = Boolean(user);
-
-  return (
-    <UserContext.Provider value={{ 
-      user, 
-      isLoggedIn, 
-      loading, 
-      login, 
-      signUp, 
-      forgotPassword, 
-      handleContinueWithoutLogin, 
-      modules, 
-      setModules, 
-      deadlines, 
-      setDeadlines, 
-      cam, 
-      setCam, 
-      tasks, 
-      setTasks 
-    }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
-=======
 
     // User object:
     // {
@@ -403,7 +345,6 @@ export const UserProvider = ({ children }) => {
 // =============================================================
 // CUSTOM HOOK
 // =============================================================
->>>>>>> 61f9ae7351e5651b542da6de33d4de0f58648d5d
 
 export function useUser() {
 
