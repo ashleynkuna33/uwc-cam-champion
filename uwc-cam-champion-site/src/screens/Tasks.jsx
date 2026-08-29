@@ -129,7 +129,7 @@ function Tasks({ onAddModuleClick }) {
     <div className="flex flex-col">
       
       {/* Header */}
-      <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-[88px] md:h-18 rounded-2xl shadow-md">
+      <div className="bg-white/70 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between px-6 h-22  md:h-18 rounded-2xl shadow-md">
         <h1 className="font-bold text-2xl text-gray-900 mr-4">Modules</h1>
         <SearchBar />
       </div>
@@ -174,7 +174,7 @@ function Tasks({ onAddModuleClick }) {
             <p className="text-gray-500 font-medium text-sm">
               No task to show here,{" "}
               <button 
-                onClick={onAddModuleClick}
+                onClick={() => onAddModuleClick("Module Detail")}
                 className="text-blue-600 font-bold hover:underline cursor-pointer"
               >
                 click here to add a module

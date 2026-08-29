@@ -19,8 +19,6 @@ import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
 import { MdOutlineMenuOpen } from "react-icons/md";
 
 
-
-
 // menu tab
 const MenuTab = ({ Icon, IconSize, Description = null, isActive, onClick }) => {
   return (
@@ -116,9 +114,10 @@ function Screen() {
                 
                 {activeTab === "Module Detail" && <ModuleDetail />}
                 {activeTab === "Progress & Projections" && <Progress />}
-                {activeTab === "Assessments" && <Tasks />}
+                {activeTab === "Assessments" && <Tasks onAddModuleClick={setActiveTab} />}
                 {activeTab === "Settings" && <Settings />}
                 {activeTab === "Reminders" && <Reminders />}
+
             </div>
         </div>) : null
     )

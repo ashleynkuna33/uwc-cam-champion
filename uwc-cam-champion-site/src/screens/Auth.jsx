@@ -14,12 +14,13 @@ function Auth() {
 
       {/* authentication view */}
       <div className='flex flex-col items-center justify-between p-4 sm:p-8 bg-cover bg-center bg-no-repeat overflow-y-auto' style={{ backgroundImage: `url(${BackgrondImg1})` }} >
-
-
+        
+        {/* auth component */}
         <div className='flex-1 flex items-center justify-center w-full'>
           <Authenticator />
         </div>
-
+        
+        {/*  */}
         <div className='flex flex-row flex-wrap items-center justify-center gap-4 py-3 shrink-0'>
           <button className='text-sm font-semibold cursor-pointer transition-colors duration-00 hover:text-blue-700 hover:underline'>
             Terms of Service
@@ -31,6 +32,7 @@ function Auth() {
             Accessibility
           </button>
         </div>
+        
       </div>
 
       {/* visual panel */}

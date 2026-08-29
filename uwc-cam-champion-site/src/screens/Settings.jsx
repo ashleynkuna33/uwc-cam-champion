@@ -75,9 +75,8 @@ export default function Settings () {
                         {/* additional email space */}
                         <div className="my-3 flex flex-col">
                             <h1>Additional Email Address</h1>
-                            <div  className="flex">
-                                <input type="text" className="border rounded-md" />
-                            </div>
+
+                            <input type="text" className="border border-gray-300 rounded-md w-fit outline-0 shadow-sm" />
                         </div>
 
                         <div className="h-px w-full bg-gray-300 my-2"></div>
