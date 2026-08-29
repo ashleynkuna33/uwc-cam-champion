@@ -1,15 +1,19 @@
-import React from "react";
+import React from 'react'
 
-const Field = ({ bg_color = "bg-white/10", type = "text", password, placeholder, value, onChange }) => {
+function CustomField({ icon: Icon, id, type, value, onChange, placeholder }) {
   return (
-    <input
-      type={password ? "password" : type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      className={`w-full px-4 py-2 rounded-lg text-white placeholder-white/50 border border-white/20 outline-none transition-all focus:border-white/50 ${bg_color}`}
-    />
-  );
-};
+    <div className='flex flex-row gap-2 items-center border border-gray-300 rounded-xl mb-5 px-3 py-2.5 focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-blue-600 transition-colors'>
+      <Icon size={20} className='text-gray-500 shrink-0' />
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className='outline-0 w-full bg-transparent text-sm'
+      />
+    </div>
+  )
+}
 
-export default Field;
+export default CustomField

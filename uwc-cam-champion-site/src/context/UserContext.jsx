@@ -1,60 +1,121 @@
-import axios from "axios";
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { apiFetch } from "../api.js";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    // user object {id, name, surname, username, email, isEmailVerified, phone, active}
-    // 
-    // 
-    // 
-    // 
-    // 
-    // 
-    // 
-    // 
-  const [user, setUser] = useState(null);
+
+  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+    return savedUser && savedToken ? JSON.parse(savedUser) : null;
+  });
+  
   const [loading, setLoading] = useState(true);
 
 
-//   data
-  const [modules, setModules] = useState(null);
-  const [deadlines, setDeadlines] = useState(null);
+  const [modules, setModules] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [deadlines, setDeadlines] = useState([]);
   const [cam, setCam] = useState(0);
-  const [tasks, setTasks] = useState(null);
 
-//   user authentication and session management logic here
+  const clearAllData = useCallback(() => {
+    localStorage.clear();
+    sessionStorage.clear();
 
-  const login = async ({username, password}) => {
-    try {} catch (error) {} finally {}
-  }
+    setUser(null);
+    setToken(null);
+    setModules([]);
+    setTasks([]);
+    setDeadlines([]);
+    setCam(0);
+  }, []);
 
-  const signUp = async ({firstname, surname, email, password}) => {
-    try {} catch (error) {} finally {}
-  }
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      clearAllData();
+    };
 
-  const forgotPassword = async ({email}) => {
-    try {} catch (error) {} finally {}
-  }
+    window.addEventListener("auth:expired", handleSessionExpired);
+    return () => window.removeEventListener("auth:expired", handleSessionExpired);
+  }, [clearAllData]);
 
-  const handleContinueWithoutLogin = () => {
-    setUser({
-        username: "Guest",
-        isGuest: true
-    });
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!token || !user?.id) {
+        clearAllData();
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const [modulesData, tasksData] = await Promise.all([
+          apiFetch(`/modules/user/${user.id}`),
+          apiFetch(`/tasks/user/${user.id}`),
+        ]);
+        setModules(modulesData || []);
+        setTasks(tasksData || []);
+      } catch (err) {
+        console.error("Failed to load authenticated user data:", err);
+        clearAllData();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, [token, user?.id, clearAllData]);
+
+  const login = async (credentials) => {
+    setLoading(true);
+    try {
+      const data = await apiFetch("/users/login", {
+        method: "POST",
+        body: credentials,
+      });
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setToken(data.token);
+      setUser(data.user);
+      return data;
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  let isLoggedIn = Boolean(user)
 
-//   data
+  const logout = () => {
+    clearAllData();
+  };
 
   return (
-    <UserContext.Provider value={{ user, isLoggedIn, loading, login, signUp, forgotPassword, handleContinueWithoutLogin, modules, deadlines, cam, tasks }}>
+    <UserContext.Provider
+      value={{
+        user,
+        token,
+        loading,
+        isLoggedIn: Boolean(token && user),
+        login,
+        logout,
+        clearAllData,
+        modules,
+        setModules,
+        tasks,
+        setTasks,
+        deadlines,
+        setDeadlines,
+        cam,
+        setCam,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
-}
+};
 
-export function useUser() {
-  return useContext(UserContext);
-}
+export const useUser = () => useContext(UserContext);

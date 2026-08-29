@@ -1,80 +1,70 @@
-import { useState } from "react";
-import { useUser } from "../context/UserContext";
-import { SignIn, SignUp, ForgotPassword } from "../components";
-import { Background1 } from "../assets";
-import CustomButton from "../components/CustomButton";
-import { BiSolidChevronsDown } from "react-icons/bi";
+import React from 'react'
+
+// icons and images
+import Logo from "../assets/uwcHeaderLogo-transparent.png"
+import BackgrondImg1 from "../assets/AI_Background_3.png"
+import BackgrondImg2 from "../assets/AI_Background_1.png"
+
+import Authenticator from "../components/auth/Authenticator";
+import Typewriternotes from "../components/Typewriternotes";
 
 function Auth() {
-    const [activeTab, setActiveTab] = useState("login");
+  return (
+    <div className='h-screen w-full grid md:grid-cols-2 overflow-hidden'>
 
-    const { user, loading } = useUser();
-    const isLoggedIn = Boolean(user);
-    const { handleContinueWithoutLogin } = useUser();
+      {/* authentication view */}
+      <div className='flex flex-col items-center justify-between p-4 sm:p-8 bg-cover bg-center bg-no-repeat overflow-y-auto' style={{ backgroundImage: `url(${BackgrondImg1})` }} >
+        
+        {/* auth component */}
+        <div className='flex-1 flex items-center justify-center w-full'>
+          <Authenticator />
+        </div>
+        
+        {/*  */}
+        <div className='flex flex-row flex-wrap items-center justify-center gap-4 py-3 shrink-0'>
+          <button className='text-sm font-semibold cursor-pointer transition-colors duration-00 hover:text-blue-700 hover:underline'>
+            Terms of Service
+          </button>
+          <button className='text-sm font-semibold cursor-pointer transition-colors duration-00 hover:text-blue-700 hover:underline'>
+            Privacy Policy
+          </button>
+          <button className='text-sm font-semibold cursor-pointer transition-colors duration-00 hover:text-blue-700 hover:underline'>
+            Accessibility
+          </button>
+        </div>
+        
+      </div>
 
-    return (
-        !isLoggedIn ?
-        (<div
-            className="h-screen w-full flex flex-col bg-fixed bg-cover bg-center overflow-hidden"
-            style={{ backgroundImage: `url(${Background1})` }}
-        >
-            {/* Logo */}
-            <div className="shrink-0 px-4 pt-4 pb-2">
-                <h1 className="text-white text-2xl font-bold tracking-wide">
-                    UWC <span className="text-yellow-400">CAM Champion</span>
-                </h1>
-            </div>
+      {/* visual panel */}
+      <div className='hidden md:flex flex-col relative bg-cover bg-center bg-no-repeat overflow-y-auto' style={{ backgroundImage: `url(${BackgrondImg2})` }}>
 
-            {/* Main content — grows to fill remaining space */}
-            <div className="flex-1 flex items-center justify-center px-4 min-h-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl gap-6 h-full max-h-145">
+        <div className='absolute inset-0 bg-black/50 pointer-events-none' />
 
-                    {/* Auth card */}
-                    <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-2xl p-6 flex flex-col min-h-0">
-                        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 hover:scrollbar-thumb-white/40 scrollbar-track-transparent mb-4 min-h-0">
-                            {activeTab === "login" && <SignIn />}
-                            {activeTab === "signup" && <SignUp />}
-                            {activeTab === "forgot" && <ForgotPassword />}
-                        </div>
-                        <div className="shrink-0 flex border-t border-white/20 pt-3 gap-2">
-                            <button
-                                onClick={() => setActiveTab("login")}
-                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                                    activeTab === "login" ? "bg-black/30 text-white" : "text-white/50 hover:text-white"
-                                }`}
-                            >Login</button>
-                            <button
-                                onClick={() => setActiveTab("signup")}
-                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                                    activeTab === "signup" ? "bg-black/30 text-white" : "text-white/50 hover:text-white"
-                                }`}
-                            >Sign Up</button>
-                            <button
-                                onClick={() => setActiveTab("forgot")}
-                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                                    activeTab === "forgot" ? "bg-black/30 text-white" : "text-white/50 hover:text-white"
-                                }`}
-                            >Forgot Password</button>
-                        </div>
-                    </div>
+        <div className='relative z-10 flex flex-col h-full w-full p-6 sm:p-10'>
 
-                    {/* Banner */}
-                    <div className="hidden md:flex items-center justify-center text-white flex-col gap-4">
-                        <h1 className="text-2xl font-bold">Banner section</h1>
-                        <p className="text-white/70 text-sm leading-relaxed">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis vel blanditiis,
-                            vitae quaerat soluta quo impedit, ipsum officia cupiditate suscipit tempore.
-                        </p>
-                    </div>
-                </div>
-            </div>
+          {/* logo */}
+          <div className='mb-18'>
+            <img src={Logo} alt="UWC Logo" className='h-20 w-auto' />
+          </div>
 
-            {/* Footer button */}
-            <div className="shrink-0 flex items-center justify-center py-4">
-                <CustomButton text={"Continue without signing in"} onClick={handleContinueWithoutLogin} icon={BiSolidChevronsDown} />
-            </div>
-        </div>) : null
-    );
+          <h1 className='text-5xl font-bold text-[#c7c4bd] max-w-md mb-12'>Join X students already tracking their modules</h1>
+
+          <Typewriternotes
+              paragraphs={[
+                  "Track your target marks and see exactly what you need to score on every remaining assessment.",
+                  "Log every assessment result the moment you get it — no spreadsheets, no guesswork.",
+                  "Set deadlines for every module and get reminded before it's too late.",
+              ]}
+              typingDuration={3000}
+              pauseDuration={30000}
+              erasingDuration={1500}
+          />
+
+        </div>
+      </div>
+
+    </div>
+  )
 }
 
-export default Auth;
+export default Auth

@@ -19,8 +19,6 @@ import { CiLogin as Login, CiLogout as Logout } from "react-icons/ci";
 import { MdOutlineMenuOpen } from "react-icons/md";
 
 
-
-
 // menu tab
 const MenuTab = ({ Icon, IconSize, Description = null, isActive, onClick }) => {
   return (
@@ -69,13 +67,7 @@ function Screen() {
                     </button>
                 </div>
                 {/* logo */}
-                {menuExpanded 
-                ?
-                <div className='flex justify-center'>
-                    <h1 className='font-bold text-xl'>UWC CAM CHAMPION</h1>
-                </div>
-                :
-                null }
+                {menuExpanded  ? <div className='flex justify-center'><h1 className='font-bold text-xl'>UWC CAM CHAMPION</h1> </div> : null }
                 
 
                 {/* tabs */}
@@ -86,9 +78,9 @@ function Screen() {
                     <MenuTab Icon={FaPlus} IconSize={size_of_icons} Description={menuExpanded ? "Assessments" : null} isActive={activeTab === "Assessments"} onClick={() => setActiveTab("Assessments")}/>
                     <MenuTab Icon={FaChartLine} IconSize={size_of_icons} Description={menuExpanded ? "Progress & Projections" : null} isActive={activeTab === "Progress & Projections"} onClick={() => setActiveTab("Progress & Projections")}/>
                         
-                    <div className={``}>
+                    <div className={``}> 
                         <MenuTab Icon={FaRegBell} IconSize={size_of_icons} Description={menuExpanded ? "Reminders" : null} isActive={activeTab === "Reminders"}
-                    onClick={() => setActiveTab("Reminders")}/>
+                        onClick={() => setActiveTab("Reminders")}/>
                         <MenuTab Icon={IoSettingsOutline} IconSize={size_of_icons} Description={menuExpanded ? "Settings" : null} isActive={activeTab === "Settings"} onClick={() => setActiveTab("Settings")}/>
                     </div>
                 </div>
@@ -122,9 +114,10 @@ function Screen() {
                 
                 {activeTab === "Module Detail" && <ModuleDetail />}
                 {activeTab === "Progress & Projections" && <Progress />}
-                {activeTab === "Assessments" && <Tasks />}
+                {activeTab === "Assessments" && <Tasks onAddModuleClick={setActiveTab} />}
                 {activeTab === "Settings" && <Settings />}
                 {activeTab === "Reminders" && <Reminders />}
+
             </div>
         </div>) : null
     )
