@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
+import CustomField from "../CustomField";
 
 // icons
 import { CiMail } from "react-icons/ci";
 
 function ForgotPassword({ screen }) {
+
+  const [email, setEmail] = useState("");
+
+  const handleSendLink = () => {
+    if (!email.trim()) {
+      alert("Email required to continue");
+      return;
+    }
+    console.log({email});
+  }
+
   return (
     <div className='w-full max-w-sm bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-2xl'>
 
@@ -12,20 +24,15 @@ function ForgotPassword({ screen }) {
         Enter your email or Staff/Student ID and we'll send you a link to reset your password
       </p>
 
-      <form className='flex flex-col' onSubmit={(e) => e.preventDefault()}>
+      <form className='flex flex-col' onSubmit={(e) => {
+        e.preventDefault();
+        handleSendLink();
+      }}>
 
         <label htmlFor="identifier" className="text-sm font-semibold mb-1">
           Email or Staff/Student ID
         </label>
-        <div className='flex flex-row gap-2 items-center border border-gray-300 rounded-xl mb-6 px-3 py-2.5 focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-blue-600 transition-colors'>
-          <CiMail size={20} className='text-gray-500 shrink-0' />
-          <input
-            id="identifier"
-            type="text"
-            placeholder='you@uwc.ac.za'
-            className='outline-0 w-full bg-transparent text-sm'
-          />
-        </div>
+        <CustomField icon={CiMail} id={"identifier"} type={"text"} value={email} onChange={(e) => setEmail(e.target.value)} placeholder={"you@myuwc.ac.za"}/>
 
         <button
           type="submit"
