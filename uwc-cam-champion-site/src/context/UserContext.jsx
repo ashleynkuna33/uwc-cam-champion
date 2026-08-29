@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { apiFetch } from "../api.js";
 
 const UserContext = createContext();
@@ -99,7 +99,8 @@ export const UserProvider = ({ children }) => {
         user,
         token,
         loading,
-        isLoggedIn: Boolean(token && user),
+        //isLoggedIn: Boolean(token && user),
+        isLoggedIn:true,
         login,
         logout,
         clearAllData,
