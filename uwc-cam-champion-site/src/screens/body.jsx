@@ -55,8 +55,7 @@ function Screen() {
     const handleLogin = () => {};
 
     return (
-        isLoggedIn ?
-        (<div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
+<div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
             {/* menu session */}
             <div className={`bg-white p-4 ${menuExpanded ? "p-4" : "p-2" } m-4 border border-transparent rounded-2xl flex flex-col justify-between transition-all duration-300`}>
                 {/* button */}
@@ -119,7 +118,7 @@ function Screen() {
                 {activeTab === "Reminders" && <Reminders />}
 
             </div>
-        </div>) : null
+        </div>
     )
 }
 
