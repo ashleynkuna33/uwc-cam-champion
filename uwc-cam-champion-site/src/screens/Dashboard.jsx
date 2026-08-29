@@ -1,103 +1,105 @@
 import { Plus } from "lucide-react";
+import {useEffect, useState} from "react";
 import "./Dashboard.css";
+const TEMP_USER_ID = 1;
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// formats date string like "2026-06-10" into "Jun 10"
+function formatDeadlineDate(isoDateString){
+  const[, month, day] = isoDateString.split("-").map(Number);
+  return `${MONTHS[month-1]} ${day}`;
+}
+function priorityColor(priority){
+  switch (priority){
+    case "High":
+      return "#ef4444"
+    case "Low":
+      return "#22c55e"
+    default:
+      return "#f59e0b" // Medium or anything else unexpected
+  }
+}
+
 
 export default function Dashboard({ onSomeAction }) {
+  // const stats = [
+  //   { label: "In Progress", value: 0, color: "#ff9f1c" },
+  //   { label: "Completed", value: 0, color: "#1e9bff" },
+  //   { label: "Not Started", value: 0, color: "#e5e7eb" },
+  // ];
 
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/dashboard/${TEMP_USER_ID}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          setDashboardData(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+  }, []);
+  // const deadlines = [
+  //   {
+  //     date: "Jun 10",
+  //     title: "Database Systems - Assignment 1",
+  //     due: "Due in 3 days",
+  //     priority: "High Priority",
+  //     color: "#ef4444",
+  //   },
+  //   {
+  //     date: "Jun 12",
+  //     title: "Database Systems - Assignment 2",
+  //     due: "Due in 5 days",
+  //     priority: "Medium Priority",
+  //     color: "#f59e0b",
+  //   },
+  //   {
+  //     date: "Sep 15",
+  //     title: "Software Engineering - Project ",
+  //     due: "Due in 2 months",
+  //     priority: "Medium Priority",
+  //     color: "#f59e0b",
+  //   },
+  //   {
+  //     date: "Jun 18",
+  //     title: "Artificial Intelligence - Quiz 2",
+  //     due: "Due in 11 days",
+  //     priority: "Low Priority",
+  //     color: "#22c55e",
+  //   },
+  // ];
+
+  if (loading) {
+    return <div className= "dashboard-layout">Loading dashboard...</div>;
+  }
+
+  if (error) {
+    return (
+        <div className= "dashboard-layout">
+          Couldn't load dashboard: {error}
+        </div>
+    )
+  }
+  const cam = dashboardData.actualCam;
+  const modules = dashboardData.modulesCards ?? [];
+  const rawStats = dashboardData.stats;
   const stats = [
-    { label: "In Progress", value: 14, color: "#ff9f1c" },
-    { label: "Completed", value: 32, color: "#1e9bff" },
-    { label: "Not Started", value: 54, color: "#e5e7eb" },
-  ];
-  
-  // const cam = (stats[1].value / stats.reduce((sum, item) => sum + item.value, 0)) * 100;
-  const cam = 67.45; // Placeholder CAM value for demonstration 
-  const modules = [
-    {
-      id: 1,
-      name: "Networking",
-      code: "COS311 S1",
-      score: 78.5,
-      progress: 78,
-      status: "On Track",
-      statusColor: "#10b981",
-    },
-    {
-      id: 2,
-      name: "Operating Systems",
-      code: "COS311 S1",
-      score: 64.2,
-      progress: 64,
-      status: "On Track",
-      statusColor: "#10b981",
-    },
-    {
-      id: 3,
-      name: "Statistics",
-      code: "STA331",
-      score: 55.1,
-      progress: 55,
-      status: "At Risk",
-      statusColor: "#f97316",
-    },
-    {
-      id: 4,
-      name: "Statistics",
-      code: "STA332 S2",
-      score: 72.3,
-      progress: 72,
-      status: "On Track",
-      statusColor: "#10b981",
-    },
-    {
-      id: 5,
-      name: "Databases",
-      code: "COS312 S2",
-      score: 81.6,
-      progress: 82,
-      status: "On Track",
-      statusColor: "#10b981",
-    },
-    {
-      id: 6,
-      name: "Machine Learning",
-      code: "COS312 S2",
-      score: 90.0,
-      progress: 90,
-      status: "Excellent",
-      statusColor: "#0ea5e9",
-    },
+    { label: "In Progress", value: rawStats?.inProgress ?? 0, color: "#ff9f1c" },
+    { label: "Completed", value: rawStats?.completed ?? 0, color: "#1e9bff" },
+    { label: "Not Started", value:rawStats?.notStarted ?? 0, color: "#e5e7eb" },
   ];
 
-  const deadlines = [
-    {
-      date: "Jun 10",
-      title: "Database Systems - Assignment 1",
-      due: "Due in 3 days",
-      priority: "High Priority",
-      color: "#ef4444",
-    },
-    {
-      date: "Jun 12",
-      title: "Database Systems - Assignment 2",
-      due: "Due in 5 days",
-      priority: "Medium Priority",
-      color: "#f59e0b",
-    },
-    {
-      date: "Sep 15",
-      title: "Software Engineering - Project ",
-      due: "Due in 2 months",
-      priority: "Medium Priority",
-      color: "#f59e0b",
-    },
-    {
-      date: "Jun 18",
-      title: "Artificial Intelligence - Quiz 2",
-      due: "Due in 11 days",
-      priority: "Low Priority",
-      color: "#22c55e",
-    },
-  ];
+  const deadlines = dashboardData.deadlines ??[];
 
   return (
     <div className="dashboard-layout">
@@ -131,7 +133,7 @@ export default function Dashboard({ onSomeAction }) {
               ))}
             </ul>
 
-            <p className="overview-footer">Total Modules: 100</p>
+            <p className="overview-footer">Total Modules: {dashboardData.modulesAdded}</p>
           </article>
 
           <article className="dashboard-card progress-card">
@@ -217,13 +219,13 @@ export default function Dashboard({ onSomeAction }) {
           </div>
           {deadlines.map((deadline) => (
             <div className="deadline-item" key={deadline.date + deadline.title}>
-              <span className="deadline-date">{deadline.date}</span>
+              <span className="deadline-date">{formatDeadlineDate(deadline.date)}</span>
               <div>
                 <p>{deadline.title}</p>
-                <small>{deadline.due}</small>
+                <small>{deadline.dueInfo}</small>
               </div>
-              <span className="deadline-pill" style={{ background: deadline.color }}>
-                {deadline.priority}
+              <span className="deadline-pill" style={{ background: priorityColor(deadline.priority)}}>
+                {deadline.priority} Priority
               </span>
             </div>
           ))}
