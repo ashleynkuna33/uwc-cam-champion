@@ -6,7 +6,8 @@ import { GrStatusGoodSmall } from "react-icons/gr";
 import { LuBookOpen } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { TbKeyframe } from "react-icons/tb";
-import AddModuleModal from "../components/AddModuleModal";
+import AddModuleModal from "../components/CreateModuleModel";
+import JoinModuleDetail from "../components/JoinModuleModal";
 import { useUser } from "../context/UserContext";
 
 
@@ -17,6 +18,7 @@ function ModuleDetail() {
 
     const [selectedModuleId, setSelectedModuleId] = useState("");
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showJoinModal, setShowJoinModal] = useState(false);
 
     const selectedModule = modules.find(
         (module) => module.id === Number(selectedModuleId)
@@ -56,20 +58,19 @@ function ModuleDetail() {
 
                 <div className="flex flex-row gap-2 justify-center">
 
-                    <button
-                        onClick={() => setShowAddModal(true)}
-                        className="rounded-2xl p-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center"
-                    >
-                        <FiPlus size={24} color="white" />
+                    <button onClick={() => setShowAddModal(true)} className="rounded-2xl p-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center shadow-md">
+                        <FaBook size={20} color="white"/>
+                        <h1 className="text-white font-semibold">Create Module</h1>
+                    </button>
 
-                        <h1 className="text-white font-bold">
+                    <button onClick={() => setShowJoinModal(true)} className="rounded-2xl p-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center shadow-md">
+                        <FiPlus size={20} color="white" />
+                        <h1 className="text-white font-semibold">
                             Add Module
                         </h1>
                     </button>
 
-                    <button
-                        className="rounded-2xl p-2 bg-blue-500/10 hover:bg-blue-500/20 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center"
-                    >
+                    <button className="rounded-2xl p-2 bg-linear-to-b from-[#1a0e04] to-black/80 hover:scale-103 transition-all duration-100 cursor-pointer flex flex-row items-center gap-2 justify-center" >
                         <MdDeleteOutline size={24} color="red" />
                         <h1 className="font-semibold text-white">Remove Module</h1>
                     </button>
@@ -301,6 +302,7 @@ function ModuleDetail() {
 
             )}
             <AddModuleModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
+            <JoinModuleDetail isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} />
             
 
         </div>
