@@ -155,7 +155,9 @@ export default function Dashboard({ onSomeAction }) {
             </div>
 
             <p className="card-description">Your overall CAM progress across all modules is {cam}%.</p>
-            <span className="status-pill good">Good Standing</span>
+            <span className={`status-pill ${cam > 0 ? "good" : "no-data"}`}>
+              {cam > 0 ? "Good Standing" : "No Data"}
+            </span>
           </article>
 
           <article className="dashboard-card quick-add-card">
@@ -164,12 +166,12 @@ export default function Dashboard({ onSomeAction }) {
               <button aria-label="Open quick add" onClick={() => onSomeAction("Assessments")} >↗</button>
             </div>
 
-            <button type="button" className="quick-add-circle" aria-label="Add module">
-              <Plus size={40} />
+            <button type="button" className="quick-add-circle" aria-label="Add module" onClick={() => onSomeAction("Module Detail")}>
+              <Plus size={40}/>
             </button>
 
             <p className="card-description">Quickly add a new module or update your progress.</p>
-            <button type="button" className="primary-button">
+            <button type="button" className="primary-button" onClick={() =>onSomeAction("Module Detail")}>
               Add Module
             </button>
           </article>
