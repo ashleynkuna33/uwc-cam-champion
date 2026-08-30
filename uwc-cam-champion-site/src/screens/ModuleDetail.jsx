@@ -6,6 +6,7 @@ import { LuBookOpen } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { TbKeyframe } from "react-icons/tb";
 import AddModuleModal from "../components/AddModuleModal";
+import RemoveModuleModal from "../components/RemoveModuleModal";
 import { useUser } from "../context/UserContext";
 
 
@@ -18,6 +19,7 @@ function ModuleDetail() {
 
     const [selectedModuleId, setSelectedModuleId] = useState("");
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
 
     const selectedModule = modules.find(
         (module) => module.id === Number(selectedModuleId)
@@ -64,6 +66,7 @@ function ModuleDetail() {
 
                     <button
                         onClick={() => setShowAddModal(true)}
+                        
                         className="rounded-2xl p-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center"
                     >
                         <FiPlus size={24} color="white" />
@@ -74,6 +77,7 @@ function ModuleDetail() {
                     </button>
 
                     <button
+                        onClick={() => setShowRemoveModal(true)}
                         className="rounded-2xl p-2 bg-blue-500/10 hover:bg-blue-500/20 transition-all duration-200 cursor-pointer flex flex-row items-center gap-2 justify-center"
                     >
                         <MdDeleteOutline size={24} color="red" />
@@ -310,6 +314,10 @@ function ModuleDetail() {
 
             )}
             <AddModuleModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
+            <RemoveModuleModal isOpen={showRemoveModal} onClose={() => setShowRemoveModal(false)} moduleToRemove={selectedModule}/>
+            
+            
+            
             
 
         </div>

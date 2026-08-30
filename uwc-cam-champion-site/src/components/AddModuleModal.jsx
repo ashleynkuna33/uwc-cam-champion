@@ -79,6 +79,7 @@ function AddModuleModal({ isOpen, onClose }) {
           <input
             name="credits"
             type="number"
+            min="0"
             value={form.credits}
             onChange={handleChange}
             placeholder="Credits"
