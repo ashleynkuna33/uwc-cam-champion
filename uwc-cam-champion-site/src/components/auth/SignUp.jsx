@@ -1,26 +1,48 @@
 import React, { useState } from 'react'
 import CustomField from "../CustomField";
+import { apiFetch } from '../../api';
 
 // icons
 import { CiMail, CiUser, CiAt, CiLock } from "react-icons/ci";
 
 function SignUp({ screen }) {
-  
+
   const [email, setEmail] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!email || !firstname || !lastname || !username || !password) {
       alert("Form not complete, ensure you have filled all the fields");
       return;
     }
 
-    const payload = { firstname, lastname, username, email, password};
-    console.log(payload);
+    setError("");
+    setSubmitting(true);
 
+    const payload = {
+      name: firstname,
+      surname: lastname,
+      username,
+      email,
+      password,
+    };
+
+    try {
+      await apiFetch("/users", {
+        method: "POST",
+        body: payload,
+      });
+      screen("SignIn");
+    } catch (err) {
+      setError(err.message || "Sign up failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -30,6 +52,10 @@ function SignUp({ screen }) {
       <p className='text-sm font-medium text-gray-600 max-w-sm mt-2 mb-8'>
         Sign up to access student services, your modules, and champion features
       </p>
+
+      {error && (
+        <p className="text-sm font-medium text-red-600 mb-4">{error}</p>
+      )}
 
       <form className='flex flex-col' onSubmit={(e) => {
         e.preventDefault();
@@ -61,8 +87,9 @@ function SignUp({ screen }) {
 
         <button
           type="submit"
-          className='w-full py-2.5 rounded-xl bg-blue-700 text-white font-semibold cursor-pointer hover:bg-blue-800 transition-colors shadow-sm'
-        >Sign Up</button>
+          disabled={submitting}
+          className='w-full py-2.5 rounded-xl bg-blue-700 text-white font-semibold cursor-pointer hover:bg-blue-800 transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed'
+        >{submitting ? "Creating account..." : "Sign Up"}</button>
 
         <p className='text-center text-sm font-medium text-gray-600 mt-5'>
           Already have an account?{' '}

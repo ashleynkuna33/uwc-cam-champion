@@ -45,14 +45,27 @@ const MenuTab = ({ Icon, IconSize, Description = null, isActive, onClick }) => {
 
 function Screen() {
 
-    const { user, loading, isLoggedIn } = useUser();
+    const { user, loading, isLoggedIn, logout } = useUser();
 
     const [menuExpanded, setMenuExpand] = useState(false);
     const [activeTab, setActiveTab] = useState("Dashboard");
-    const [isLogged, setLogin] = useState(false);
     const size_of_icons = 22;
 
-    const handleLogin = () => {};
+    if (loading) {
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
+                <p className="text-gray-600 font-medium">Loading...</p>
+            </div>
+        );
+    }
+
+    if (!isLoggedIn) {
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
+                <p className="text-gray-600 font-medium">You must be logged in to view this page.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen w-full grid grid-cols-[auto_1fr] flex-1 bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
@@ -86,16 +99,13 @@ function Screen() {
 
                 {/* user profile */}
                 {menuExpanded ? 
-                <div className='flex flex-row justify-between cursor-pointer transition-all duration-100 hover:bg-black/10 p-2 border border-transparent rounded-2xl'>
+                <div className='flex flex-row justify-between cursor-pointer transition-all duration-100 hover:bg-black/10 p-2 border border-transparent rounded-2xl' onClick={logout}>
                     <div className='flex flex-row gap-2'>
                         <FaUserGraduate size={size_of_icons}/>
-                        <h1 className='font-bold'>Login</h1>
+                        <h1 className='font-bold'>{user?.name || "Login"}</h1>
                     </div>
                     <div>
-                        { isLogged ? 
-                        <Logout size={size_of_icons}/> 
-                        :
-                        <Login size={size_of_icons}/>}
+                        <Logout size={size_of_icons}/>
                     </div>
 
                 </div> : <div></div>
