@@ -5,15 +5,12 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
 
-  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
-    return savedUser && savedToken ? JSON.parse(savedUser) : null;
+    return savedUser ? JSON.parse(savedUser) : null;
   });
-  
-  const [loading, setLoading] = useState(true);
 
+  const [loading, setLoading] = useState(true);
 
   const [modules, setModules] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -25,7 +22,6 @@ export const UserProvider = ({ children }) => {
     sessionStorage.clear();
 
     setUser(null);
-    setToken(null);
     setModules([]);
     setTasks([]);
     setDeadlines([]);
@@ -43,7 +39,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUserData = async () => {
-      if (!token || !user?.id) {
+      if (!user?.id) {
         clearAllData();
         setLoading(false);
         return;
@@ -65,21 +61,19 @@ export const UserProvider = ({ children }) => {
     };
 
     loadUserData();
-  }, [token, user?.id, clearAllData]);
+  }, [user?.id, clearAllData]);
 
+  // TODO: restore JWT flow once backend issues tokens (see api.js Authorization header)
   const login = async (credentials) => {
     setLoading(true);
     try {
-      const data = await apiFetch("/users/login", {
+      const data = await apiFetch("/auth/login", {
         method: "POST",
         body: credentials,
       });
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      setToken(data.token);
-      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
       return data;
     } catch (error) {
       console.error("Login failed:", error);
@@ -97,10 +91,8 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         user,
-        token,
         loading,
-        //isLoggedIn: Boolean(token && user),
-        isLoggedIn:true,
+        isLoggedIn: Boolean(user),
         login,
         logout,
         clearAllData,
