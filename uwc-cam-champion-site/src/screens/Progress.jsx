@@ -1,7 +1,13 @@
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useRef, useState, useCallback, useMemo, useEffect } from "react";
 import SimulationPanel from "../components/SimulationPanel";
 import NullModuleProgress from "../screens/NullModuleProgress";
 import { getGrade, TONE_CLASSES } from "../utils/grade";
+import {
+  fetchDashboard,
+  fetchUserTasksForModule,
+  updateUserTaskMark,
+  getCurrentUserId,
+} from "../api";
 
 const ProgressBar = ({ title, percentage }) => {
   const displayPercent = typeof percentage === "number" ? `${percentage}%` : percentage;
@@ -68,128 +74,152 @@ const AssessmentSlider = ({ trackRef, title, weight, value, onChangeStart, onSee
 const DEFAULT_PROJECTION = 65;
 
 function Progress() {
-  const [pendingAssessment, setPendingAssessment] = useState([
-    {
-      id: 1,
-      moduleName: "MAT 311",
-      assessment: [
-        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 3, assessmentName: "Assignment 2", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 4, assessmentName: "Test 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 5, assessmentName: "Tutorial 2", weight: 20, assessmentStatus: "pending", mark: 0 },
-      ],
-    },
-    {
-      id: 2,
-      moduleName: "STA 311",
-      assessment: [
-        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 3, assessmentName: "Assignment 2", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 4, assessmentName: "Test 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 5, assessmentName: "Tutorial 2", weight: 20, assessmentStatus: "pending", mark: 0 },
-      ],
-    },
-    {
-      id: 3,
-      moduleName: "MAT 211",
-      assessment: [
-        { id: 1, assessmentName: "Assignment 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 2, assessmentName: "Tutorial 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 3, assessmentName: "Assignment 2", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 4, assessmentName: "Test 1", weight: 20, assessmentStatus: "pending", mark: 0 },
-        { id: 5, assessmentName: "Tutorial 2", weight: 20, assessmentStatus: "pending", mark: 0 },
-      ],
-    },
-  ]);
+  const userId = getCurrentUserId();
 
-  const [selectedModuleId, setSelectedModuleId] = useState(
-    pendingAssessment[0]?.id ?? null
-  );
+  // Module list (id, name) for the picker — comes from the dashboard's
+  // module cards, since there's no dedicated "list my modules" endpoint yet.
+  const [moduleList, setModuleList] = useState([]);
+  const [selectedModuleId, setSelectedModuleId] = useState(null);
+
+  // The actual task list (with real marks) for whichever module is selected.
+  const [tasks, setTasks] = useState([]);
+
+  const [loadingModules, setLoadingModules] = useState(true);
+  const [loadingTasks, setLoadingTasks] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Load the module list once on mount.
+  useEffect(() => {
+    if (!userId) {
+      setError("Not logged in.");
+      setLoadingModules(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadModules() {
+      try {
+        setLoadingModules(true);
+        setError(null);
+        const dashboard = await fetchDashboard(userId);
+        if (cancelled) return;
+        const modules = dashboard?.moduleCards ?? dashboard?.modules ?? [];
+        setModuleList(modules);
+        if (modules.length > 0) {
+          setSelectedModuleId((prev) => prev ?? modules[0].id);
+        }
+      } catch (err) {
+        if (!cancelled) setError(err.message || "Failed to load modules");
+      } finally {
+        if (!cancelled) setLoadingModules(false);
+      }
+    }
+
+    loadModules();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  // Load this module's real tasks whenever the selection changes.
+  useEffect(() => {
+    if (!selectedModuleId || !userId) return;
+
+    let cancelled = false;
+
+    async function loadTasks() {
+      try {
+        setLoadingTasks(true);
+        setError(null);
+        const data = await fetchUserTasksForModule(selectedModuleId, userId);
+        if (!cancelled) setTasks(data || []);
+      } catch (err) {
+        if (!cancelled) setError(err.message || "Failed to load tasks");
+      } finally {
+        if (!cancelled) setLoadingTasks(false);
+      }
+    }
+
+    loadTasks();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedModuleId, userId]);
 
   const selectedModule = useMemo(
-    () => pendingAssessment.find((m) => m.id === selectedModuleId) ?? pendingAssessment[0],
-    [pendingAssessment, selectedModuleId]
+    () => moduleList.find((m) => m.id === selectedModuleId) ?? moduleList[0],
+    [moduleList, selectedModuleId]
   );
 
-  // One projected slider value per (module, assessment) pair, so switching
+  // One projected slider value per (module, task) pair, so switching
   // modules never clobbers another module's in-progress projections.
   const [projections, setProjections] = useState({});
 
-  const setProjection = useCallback(
-    (moduleId, assessmentId, value) => {
-      setProjections((prev) => ({
-        ...prev,
-        [moduleId]: { ...prev[moduleId], [assessmentId]: value },
-      }));
-    },
-    []
-  );
+  const setProjection = useCallback((moduleId, userTaskId, value) => {
+    setProjections((prev) => ({
+      ...prev,
+      [moduleId]: { ...prev[moduleId], [userTaskId]: value },
+    }));
+  }, []);
 
   const getProjection = useCallback(
-    (moduleId, assessmentId) => projections[moduleId]?.[assessmentId] ?? DEFAULT_PROJECTION,
+    (moduleId, userTaskId) => projections[moduleId]?.[userTaskId] ?? DEFAULT_PROJECTION,
     [projections]
   );
 
-  // Track refs keyed by assessment id — the slider list is dynamic, so we can't
-  // declare a fixed useRef per slider the way the old two-slider version did.
+  // Track refs keyed by userTaskId — the slider list is dynamic.
   const trackRefs = useRef({});
-  const getTrackRef = (assessmentId) => {
-    if (!trackRefs.current[assessmentId]) trackRefs.current[assessmentId] = { current: null };
-    return trackRefs.current[assessmentId];
+  const getTrackRef = (userTaskId) => {
+    if (!trackRefs.current[userTaskId]) trackRefs.current[userTaskId] = { current: null };
+    return trackRefs.current[userTaskId];
   };
 
   const updateMark = useCallback(
-    (assessmentId, newMark) => {
-      setPendingAssessment((prev) =>
-        prev.map((module) =>
-          module.id !== selectedModuleId
-            ? module
-            : {
-                ...module,
-                assessment: module.assessment.map((a) =>
-                  a.id === assessmentId ? { ...a, mark: newMark } : a
-                ),
-              }
+    async (userTaskId, newMark) => {
+      // Optimistic update.
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.userTaskId === userTaskId ? { ...t, mark: newMark, isCompleted: true } : t
         )
       );
+
+      try {
+        await updateUserTaskMark(userTaskId, newMark);
+      } catch (err) {
+        setError(err.message || "Failed to save mark");
+        // Roll back to the server's source of truth on failure.
+        if (selectedModuleId && userId) {
+          const data = await fetchUserTasksForModule(selectedModuleId, userId).catch(() => null);
+          if (data) setTasks(data);
+        }
+      }
     },
-    [selectedModuleId]
+    [selectedModuleId, userId]
   );
 
-  const pendingList = useMemo(
-    () => selectedModule?.assessment.filter((a) => a.assessmentStatus === "pending") ?? [],
-    [selectedModule]
-  );
+  const pendingList = useMemo(() => tasks.filter((t) => !t.isCompleted), [tasks]);
 
-  // Weighted average across the whole module: graded assessments use their real
-  // mark, pending ones use whatever the person has dragged the slider to.
+  // "Current" comes from the backend's own module score — not recomputed
+  // here — so it stays consistent with whatever the Dashboard shows for
+  // this module. Only the projection (below) is legitimately frontend-owned,
+  // since it's a live "what if" that has no reason to touch the server.
+  const currentMark = selectedModule?.score ?? 0;
+
+  // Builds directly on top of currentMark (the backend's number) instead of
+  // recomputing the completed portion again from raw task marks — avoids
+  // two independent calculations of "the same thing" ever drifting apart.
+  // Just adds each pending task's projected contribution on top.
   const projectedFinal = useMemo(() => {
-    if (!selectedModule) return 0;
-    const totalWeight = selectedModule.assessment.reduce((sum, a) => sum + a.weight, 0);
-    if (totalWeight === 0) return 0;
-    const weightedSum = selectedModule.assessment.reduce((sum, a) => {
-      const mark = a.assessmentStatus === "pending"
-        ? getProjection(selectedModule.id, a.id)
-        : a.mark;
-      return sum + mark * a.weight;
+    const pendingContribution = pendingList.reduce((sum, t) => {
+      const projectedMark = getProjection(selectedModuleId, t.userTaskId);
+      return sum + (projectedMark / 100) * (t.taskWeight ?? 0);
     }, 0);
-    return Math.round(weightedSum / totalWeight);
-  }, [selectedModule, getProjection]);
-
-  const currentMark = useMemo(() => {
-    if (!selectedModule) return 0;
-    const graded = selectedModule.assessment.filter((a) => a.assessmentStatus !== "pending");
-    if (graded.length === 0) return 0;
-    const totalWeight = graded.reduce((sum, a) => sum + a.weight, 0);
-    if (totalWeight === 0) return 0;
-    const weightedSum = graded.reduce((sum, a) => sum + a.mark * a.weight, 0);
-    return Math.round(weightedSum / totalWeight);
-  }, [selectedModule]);
+    return Math.round(currentMark + pendingContribution);
+  }, [pendingList, currentMark, selectedModuleId, getProjection]);
 
   const remainingWeight = useMemo(
-    () => pendingList.reduce((sum, a) => sum + a.weight, 0),
+    () => pendingList.reduce((sum, t) => sum + (t.taskWeight ?? 0), 0),
     [pendingList]
   );
 
@@ -202,17 +232,17 @@ function Progress() {
     { id: 3, title: "REMAINING WEIGHT", percentage: remainingWeight },
   ];
 
-  const seekFromEvent = (event, trackRef, assessmentId) => {
+  const seekFromEvent = (event, trackRef, userTaskId) => {
     const bar = trackRef.current.getBoundingClientRect();
     const clientX = event.touches ? event.touches[0].clientX : event.clientX;
     const clickX = clientX - bar.left;
     const percent = Math.min(100, Math.max(0, (clickX / bar.width) * 100));
-    setProjection(selectedModule.id, assessmentId, Math.round(percent));
+    setProjection(selectedModuleId, userTaskId, Math.round(percent));
   };
 
-  const startDrag = (trackRef, assessmentId) => (event) => {
+  const startDrag = (trackRef, userTaskId) => (event) => {
     event.preventDefault();
-    const onMove = (e) => seekFromEvent(e, trackRef, assessmentId);
+    const onMove = (e) => seekFromEvent(e, trackRef, userTaskId);
     const onEnd = () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onEnd);
@@ -225,11 +255,24 @@ function Progress() {
     window.addEventListener("touchend", onEnd);
   };
 
-  const totalPending = pendingAssessment
-    .flatMap((module) => module.assessment)
-    .filter((a) => a.assessmentStatus === "pending").length;
+  if (loadingModules) {
+    return (
+      <div className="flex items-center justify-center h-64 text-slate-500 font-medium">
+        Loading your modules...
+      </div>
+    );
+  }
 
-  if (!totalPending) {
+  if (error && moduleList.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-2 text-red-600 font-medium">
+        <p>Couldn't load your modules.</p>
+        <p className="text-sm text-slate-500">{error}</p>
+      </div>
+    );
+  }
+
+  if (moduleList.length === 0) {
     return <NullModuleProgress />;
   }
 
@@ -245,13 +288,19 @@ function Progress() {
           value={selectedModuleId ?? ""}
           onChange={(e) => setSelectedModuleId(Number(e.target.value))}
         >
-          {pendingAssessment.map((module) => (
+          {moduleList.map((module) => (
             <option value={module.id} key={module.id}>
-              {module.moduleName}
+              {module.name}
             </option>
           ))}
         </select>
       </div>
+
+      {error && (
+        <div className="text-sm text-amber-800 bg-amber-100 border border-amber-200 rounded-xl px-4 py-2 mt-2">
+          {error}
+        </div>
+      )}
 
       {/* stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 my-6">
@@ -265,31 +314,33 @@ function Progress() {
         <div className="bg-white rounded-2xl flex-1 shadow-md flex flex-col min-h-[600px]">
           <div className="flex flex-row justify-between items-center px-4 py-3">
             <p className="text-sm font-bold text-slate-800 tracking-wide">
-              PROJECTION SLIDER — {selectedModule?.moduleName}
+              PROJECTION SLIDER — {selectedModule?.name}
             </p>
             <span className="text-xs font-semibold text-emerald-700 bg-emerald-100 rounded-full px-3 py-1">
-              {pendingList.length} pending
+              {loadingTasks ? "loading..." : `${pendingList.length} pending`}
             </span>
           </div>
 
           <div className="flex flex-col gap-8 px-4 pb-4 flex-1 overflow-y-auto">
-            {pendingList.length === 0 ? (
+            {loadingTasks ? (
+              <p className="text-sm text-slate-400 italic">Loading tasks...</p>
+            ) : pendingList.length === 0 ? (
               <p className="text-sm text-slate-400 italic">
                 No pending assessments left for this module.
               </p>
             ) : (
-              pendingList.map((a) => {
-                const trackRef = getTrackRef(a.id);
-                const value = getProjection(selectedModule.id, a.id);
+              pendingList.map((t) => {
+                const trackRef = getTrackRef(t.userTaskId);
+                const value = getProjection(selectedModuleId, t.userTaskId);
                 return (
                   <AssessmentSlider
-                    key={a.id}
+                    key={t.userTaskId}
                     trackRef={trackRef}
-                    title={a.assessmentName.toUpperCase()}
-                    weight={a.weight}
+                    title={(t.name ?? "").toUpperCase()}
+                    weight={t.taskWeight}
                     value={value}
-                    onSeek={(e) => seekFromEvent(e, trackRef, a.id)}
-                    onChangeStart={startDrag(trackRef, a.id)}
+                    onSeek={(e) => seekFromEvent(e, trackRef, t.userTaskId)}
+                    onChangeStart={startDrag(trackRef, t.userTaskId)}
                   />
                 );
               })
@@ -314,9 +365,10 @@ function Progress() {
 
         <div className="flex-1 shadow-md rounded-2xl overflow-hidden min-h-[600px]">
           <SimulationPanel
-            pendingAssessment={selectedModule ? [selectedModule] : []}
-            projections={projections[selectedModule?.id] ?? {}}
+            pendingAssessment={tasks}
+            projections={projections[selectedModuleId] ?? {}}
             onUpdateMark={updateMark}
+            currentMark={currentMark}
           />
         </div>
       </div>

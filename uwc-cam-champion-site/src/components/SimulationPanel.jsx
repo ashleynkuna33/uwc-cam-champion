@@ -1,56 +1,77 @@
 import { useMemo, useState, useEffect } from "react";
-import { projectCam, getGrade, TONE_CLASSES } from "../utils/grade";
+import { getGrade, TONE_CLASSES } from "../utils/grade";
 
 const SCENARIO_SCORES = [40, 50, 60, 70, 80, 90, 100];
 
-export default function SimulationPanel({ pendingAssessment = [], projections = {}, onUpdateMark }) {
-  const module = pendingAssessment[0];
-  const allAssessments = module?.assessment ?? [];
-  const pendingList = allAssessments.filter((a) => a.assessmentStatus === "pending");
+// Same additive model as Progress.jsx's projectedFinal: currentMark
+// (backend, already covers completed tasks) + each pending task's
+// contribution (mark% * taskWeight / 100). Deliberately kept as one
+// function so there's a single place to update if that formula changes,
+// rather than two independent copies of the same math.
+function projectFromBaseline(currentMark, pendingList, marksByTaskId) {
+  const pendingContribution = pendingList.reduce((sum, t) => {
+    const mark = marksByTaskId[t.userTaskId] ?? 0;
+    return sum + (mark / 100) * (t.taskWeight ?? 0);
+  }, 0);
+  return Math.round(currentMark + pendingContribution);
+}
 
-  // Which pending assessment the "what if" table is exploring. Defaults to
-  // the first pending one, and re-syncs if the module/pending list changes
-  // (e.g. switching modules in the dropdown).
-  const [scenarioId, setScenarioId] = useState(pendingList[0]?.id ?? null);
+// NOTE: pendingAssessment is the flat task list for the selected module
+// (Progress.jsx now passes `tasks` directly — not `[module]` like before).
+// currentMark comes from the backend (selectedModule.score in Progress.jsx)
+// so this panel never recomputes the completed portion on its own.
+export default function SimulationPanel({
+  pendingAssessment = [],
+  projections = {},
+  onUpdateMark,
+  currentMark = 0,
+}) {
+  const allTasks = pendingAssessment;
+  const pendingList = allTasks.filter((t) => !t.isCompleted);
+
+  // Which pending task the "what if" table is exploring. Defaults to the
+  // first pending one, and re-syncs if the pending list changes (e.g.
+  // switching modules, or a task getting marked complete).
+  const [scenarioId, setScenarioId] = useState(pendingList[0]?.userTaskId ?? null);
 
   useEffect(() => {
-    if (!pendingList.some((a) => a.id === scenarioId)) {
-      setScenarioId(pendingList[0]?.id ?? null);
+    if (!pendingList.some((t) => t.userTaskId === scenarioId)) {
+      setScenarioId(pendingList[0]?.userTaskId ?? null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [module?.id]);
+  }, [pendingList.map((t) => t.userTaskId).join(",")]);
 
-  const scenarioAssessment = pendingList.find((a) => a.id === scenarioId);
+  const scenarioTask = pendingList.find((t) => t.userTaskId === scenarioId);
 
-  // Baseline marks for every assessment in the module: graded ones use their
-  // real mark, pending ones use their current slider projection.
+  // Baseline marks for every pending task: whatever the slider on the main
+  // page currently has it set to.
   const baselineMarks = useMemo(() => {
     const marks = {};
-    allAssessments.forEach((a) => {
-      marks[a.id] = a.assessmentStatus === "pending" ? projections[a.id] ?? 65 : a.mark;
+    pendingList.forEach((t) => {
+      marks[t.userTaskId] = projections[t.userTaskId] ?? 65;
     });
     return marks;
-  }, [allAssessments, projections]);
+  }, [pendingList, projections]);
 
   const currentProjection = useMemo(
-    () => projectCam(allAssessments, baselineMarks),
-    [allAssessments, baselineMarks]
+    () => projectFromBaseline(currentMark, pendingList, baselineMarks),
+    [currentMark, pendingList, baselineMarks]
   );
   const currentGrade = getGrade(currentProjection);
   const currentTone = TONE_CLASSES[currentGrade.tone];
 
-  // Vary only the scenario assessment across fixed test scores; every other
-  // assessment (graded + other pending sliders) stays at its baseline value.
+  // Vary only the scenario task across fixed test scores; every other
+  // pending task stays at its baseline slider value.
   const rows = useMemo(() => {
-    if (!scenarioAssessment) return [];
+    if (!scenarioTask) return [];
     return SCENARIO_SCORES.map((scenarioScore) => {
-      const marks = { ...baselineMarks, [scenarioAssessment.id]: scenarioScore };
-      const cam = projectCam(allAssessments, marks);
+      const marks = { ...baselineMarks, [scenarioTask.userTaskId]: scenarioScore };
+      const cam = projectFromBaseline(currentMark, pendingList, marks);
       return { score: scenarioScore, cam, ...getGrade(cam) };
     });
-  }, [scenarioAssessment, baselineMarks, allAssessments]);
+  }, [scenarioTask, baselineMarks, pendingList, currentMark]);
 
-  if (!module) {
+  if (allTasks.length === 0) {
     return (
       <div className="bg-white rounded-2xl h-full flex flex-col items-center justify-center text-sm text-slate-400">
         No module selected.
@@ -83,9 +104,9 @@ export default function SimulationPanel({ pendingAssessment = [], projections = 
                 value={scenarioId ?? ""}
                 onChange={(e) => setScenarioId(Number(e.target.value))}
               >
-                {pendingList.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.assessmentName}
+                {pendingList.map((t) => (
+                  <option key={t.userTaskId} value={t.userTaskId}>
+                    {t.name}
                   </option>
                 ))}
               </select>
@@ -95,12 +116,12 @@ export default function SimulationPanel({ pendingAssessment = [], projections = 
           <div className="mx-4 mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 px-4 py-3">
             <p className="text-xs text-slate-500">
               Right now:{" "}
-              {pendingList.map((a, i) => (
-                <span key={a.id}>
+              {pendingList.map((t, i) => (
+                <span key={t.userTaskId}>
                   <span className="font-semibold text-slate-800">
-                    {baselineMarks[a.id]}%
+                    {baselineMarks[t.userTaskId]}%
                   </span>{" "}
-                  on {a.assessmentName}
+                  on {t.name}
                   {i < pendingList.length - 1 ? ", " : ""}
                 </span>
               ))}
@@ -118,7 +139,7 @@ export default function SimulationPanel({ pendingAssessment = [], projections = 
           <div className="flex-1 overflow-y-auto px-4 pb-4 flex flex-col gap-2">
             {rows.map((r) => {
               const tone = TONE_CLASSES[r.tone];
-              const isCurrent = r.score === baselineMarks[scenarioAssessment?.id];
+              const isCurrent = r.score === baselineMarks[scenarioTask?.userTaskId];
               return (
                 <div
                   key={r.score}
@@ -127,7 +148,7 @@ export default function SimulationPanel({ pendingAssessment = [], projections = 
                   }`}
                 >
                   <span className="text-sm text-slate-700">
-                    <strong className="text-slate-900">{r.score}%</strong> in {scenarioAssessment.assessmentName}
+                    <strong className="text-slate-900">{r.score}%</strong> in {scenarioTask.name}
                   </span>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs font-bold rounded-lg px-3 py-1.5 whitespace-nowrap ${tone.bg} ${tone.text}`}>

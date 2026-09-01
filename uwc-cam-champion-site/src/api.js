@@ -35,3 +35,25 @@ export const apiFetch = async (endpoint, options = {}) => {
 
     return response.status !== 204 ? response.json() : null;
 };
+
+// Reads the logged-in user's id out of whatever was stored at login.
+export const getCurrentUserId = () => {
+    const raw = localStorage.getItem("user");
+    if (!raw) return null;
+    try {
+        return JSON.parse(raw).id ?? null;
+    } catch {
+        return null;
+    }
+};
+
+export const fetchDashboard = (userId) => apiFetch(`/dashboard/${userId}`);
+
+export const fetchUserTasksForModule = (moduleId, userId) =>
+    apiFetch(`/user-tasks/module/${moduleId}/user/${userId}`);
+
+export const updateUserTaskMark = (userTaskId, mark) =>
+    apiFetch(`/user-tasks/${userTaskId}`, {
+        method: "PATCH",
+        body: { mark, isCompleted: true },
+    });
