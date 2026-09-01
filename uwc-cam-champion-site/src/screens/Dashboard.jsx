@@ -1,7 +1,6 @@
 import { Plus } from "lucide-react";
-import {useEffect, useState} from "react";
+import { useUser } from "../context/UserContext";
 import "./Dashboard.css";
-const TEMP_USER_ID = 1;
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -23,31 +22,66 @@ function priorityColor(priority){
 
 
 export default function Dashboard({ onSomeAction }) {
-  // const stats = [
-  //   { label: "In Progress", value: 0, color: "#ff9f1c" },
-  //   { label: "Completed", value: 0, color: "#1e9bff" },
-  //   { label: "Not Started", value: 0, color: "#e5e7eb" },
-  // ];
+  const { user, modules = [], tasks = [], cam: contextCam, setCam } = useUser();
 
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const moduleAverageCam = modules.length
+    ? Math.round(
+        modules.reduce((total, module) => {
+          const score = Number(module.score ?? module.currentCam ?? module.cam ?? 0);
+          return total + (Number.isFinite(score) ? score : 0);
+        }, 0) / modules.length
+      )
+    : 0;
+
+  const cam = Number(contextCam ?? moduleAverageCam ?? 0);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/dashboard/${TEMP_USER_ID}`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          setDashboardData(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        });
-  }, []);
+    if (!contextCam && moduleAverageCam > 0) {
+      setCam(moduleAverageCam);
+    }
+  }, [contextCam, moduleAverageCam, setCam]);
+
+  const rawStats = {
+    inProgress: modules.filter((module) => {
+      const status = String(module.status ?? "").toLowerCase();
+      return status.includes("active") || status.includes("in progress") || status.includes("ongoing");
+    }).length,
+    completed: modules.filter((module) => {
+      const status = String(module.status ?? "").toLowerCase();
+      return status.includes("completed") || status.includes("done");
+    }).length,
+    notStarted: modules.filter((module) => {
+      const status = String(module.status ?? "").toLowerCase();
+      return status.includes("not started") || status.includes("pending");
+    }).length,
+  };
+
+  const stats = [
+    { label: "In Progress", value: rawStats.inProgress, color: "#ff9f1c" },
+    { label: "Completed", value: rawStats.completed, color: "#1e9bff" },
+    { label: "Not Started", value: rawStats.notStarted, color: "#e5e7eb" },
+  ];
+
+  const deadlines = tasks
+    .filter((task) => task?.dueDate)
+    .slice(0, 4)
+    .map((task) => ({
+      date: task.dueDate,
+      title: task.title,
+      dueInfo: task.status ?? "Due soon",
+      priority: task.priority ?? (task.status?.includes("Past Due") ? "High" : "Medium"),
+    }));
+
+  const moduleCards = modules.map((module) => ({
+    id: module.id,
+    code: module.moduleCode ?? module.code ?? "",
+    name: module.moduleName ?? module.name ?? "",
+    score: Number(module.score ?? module.currentCam ?? module.cam ?? 0),
+    progress: Number(module.progress ?? 0),
+    status: module.status ?? "Not Started",
+    statusColor: module.statusColor ?? "#e5e7eb",
+  }));
+
   // const deadlines = [
   //   {
   //     date: "Jun 10",
@@ -79,35 +113,13 @@ export default function Dashboard({ onSomeAction }) {
   //   },
   // ];
 
-  if (loading) {
-    return <div className= "dashboard-layout">Loading dashboard...</div>;
-  }
-
-  if (error) {
-    return (
-        <div className= "dashboard-layout">
-          Couldn't load dashboard: {error}
-        </div>
-    )
-  }
-  const cam = dashboardData.actualCam;
-  const modules = dashboardData.modulesCards ?? [];
-  const rawStats = dashboardData.stats;
-  const stats = [
-    { label: "In Progress", value: rawStats?.inProgress ?? 0, color: "#ff9f1c" },
-    { label: "Completed", value: rawStats?.completed ?? 0, color: "#1e9bff" },
-    { label: "Not Started", value:rawStats?.notStarted ?? 0, color: "#e5e7eb" },
-  ];
-
-  const deadlines = dashboardData.deadlines ??[];
-
   return (
     <div className="dashboard-layout">
       <main className="dashboard-main">
         <section className="dashboard-header">
           <div>
             <h3 className="small-label">Dashboard</h3>
-            <p>Welcome back, UWC Champion!</p>
+            <p>Welcome back, {user?.name || "UWC Champion"}!</p>
           </div>
         </section>
         <section className="top-cards">
@@ -133,7 +145,7 @@ export default function Dashboard({ onSomeAction }) {
               ))}
             </ul>
 
-            <p className="overview-footer">Total Modules: {dashboardData.modulesAdded}</p>
+            <p className="overview-footer">Total Modules: {modules.length}</p>
           </article>
 
           <article className="dashboard-card progress-card">
@@ -186,7 +198,7 @@ export default function Dashboard({ onSomeAction }) {
           </div>
 
           <div className="modules-grid">
-            {modules.map((module) => (
+            {moduleCards.map((module) => (
               <article className="module-summary-card" key={module.id}>
                 <div className="module-summary-top">
                   <span className="module-chip">{module.code}</span>
