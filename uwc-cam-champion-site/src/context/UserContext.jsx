@@ -54,7 +54,7 @@ export const UserProvider = ({ children }) => {
         setTasks(tasksData || []);
       } catch (err) {
         console.error("Failed to load authenticated user data:", err);
-        clearAllData();
+        // clearAllData();
       } finally {
         setLoading(false);
       }
@@ -62,6 +62,10 @@ export const UserProvider = ({ children }) => {
 
     loadUserData();
   }, [user?.id, clearAllData]);
+
+  useEffect(() => {
+    console.log("user changed:", user, "isLoggedIn:", Boolean(user));
+  }, [user]);
 
   // TODO: restore JWT flow once backend issues tokens (see api.js Authorization header)
   const login = async (credentials) => {
@@ -74,7 +78,8 @@ export const UserProvider = ({ children }) => {
 
       localStorage.setItem("user", JSON.stringify(data));
       setUser(data);
-      console.log(data)
+      console.log(data);
+      console.log(Boolean(user))
       return data;
     } catch (error) {
       console.error("Login failed:", error);

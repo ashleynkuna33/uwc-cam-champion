@@ -52,19 +52,11 @@ function Screen() {
     const size_of_icons = 22;
 
     if (loading) {
-        return (
-            <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
-                <p className="text-gray-600 font-medium">Loading...</p>
-            </div>
-        );
+        return null;
     }
 
     if (!isLoggedIn) {
-        return (
-            <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-tr from-[#EBF1FA] to-[#F7FAFC]">
-                <p className="text-gray-600 font-medium">You must be logged in to view this page.</p>
-            </div>
-        );
+        return null;
     }
 
     return (

@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import CustomField from "../CustomField";
 import { apiFetch } from '../../api';
+import { useUser } from '../../context/UserContext';
 
 // icons
 import { CiMail, CiUser, CiAt, CiLock } from "react-icons/ci";
 
 function SignUp({ screen }) {
+
+  const { login } = useUser();
 
   const [email, setEmail] = useState("");
   const [firstname, setFirstname] = useState("");
@@ -37,7 +40,10 @@ function SignUp({ screen }) {
         method: "POST",
         body: payload,
       });
-      screen("SignIn");
+
+      // Account created — log them straight in so UserContext/isLoggedIn updates
+      // and the app switches to the dashboard automatically.
+      await login({ username: email, password });
     } catch (err) {
       setError(err.message || "Sign up failed. Please try again.");
     } finally {

@@ -7,8 +7,19 @@ import BackgrondImg2 from "../assets/AI_Background_1.png"
 
 import Authenticator from "../components/auth/Authenticator";
 import Typewriternotes from "../components/Typewriternotes";
+import { useUser } from "../context/UserContext";
 
 function Auth() {
+  const { isLoggedIn, loading } = useUser();
+
+  if (loading) {
+    return null;
+  }
+
+  if (isLoggedIn) {
+    return null;
+  }
+
   return (
     <div className='h-screen w-full grid md:grid-cols-2 overflow-hidden'>
 
