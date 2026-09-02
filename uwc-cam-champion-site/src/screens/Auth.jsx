@@ -48,15 +48,16 @@ function Auth() {
 
       {/* visual panel */}
       <div className='hidden md:flex flex-col relative bg-cover bg-center bg-no-repeat overflow-y-auto' style={{ backgroundImage: `url(${BackgrondImg2})` }}>
+        
+        {/* logo */}
+        <div className='mb-14 ml-4 mt-4'>
+          <img src={Logo} alt="UWC Logo" className='h-20 w-auto' />
+        </div>
 
         <div className='absolute inset-0 bg-black/50 pointer-events-none' />
 
-        <div className='relative z-10 flex flex-col h-full w-full p-6 sm:p-10'>
 
-          {/* logo */}
-          <div className='mb-18'>
-            <img src={Logo} alt="UWC Logo" className='h-20 w-auto' />
-          </div>
+        <div className='relative z-10 flex flex-col h-full w-full p-6 sm:p-10'>
 
           <h1 className='text-5xl font-bold text-[#c7c4bd] max-w-md mb-12'>Join X students already tracking their modules</h1>
 
