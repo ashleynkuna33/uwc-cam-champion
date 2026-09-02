@@ -5,16 +5,14 @@ import "../components/Reminders.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useUser } from "../context/UserContext";
 
-
-
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function getCurrentWeek() {
-  const today = new Date();
-  const currentDayIdx = today.getDay();
+// Given any reference date, return that date's week (Sun-Sat) as day numbers
+function getWeekFor(refDate) {
+  const dayIdx = refDate.getDay();
 
-  const sunday = new Date(today);
-  sunday.setDate(today.getDate() - currentDayIdx);
+  const sunday = new Date(refDate);
+  sunday.setDate(refDate.getDate() - dayIdx);
 
   const week = [];
   for (let i = 0; i < 7; i++) {
@@ -23,7 +21,7 @@ function getCurrentWeek() {
     week.push(d.getDate());
   }
 
-  return { dates: week, todayIdx: currentDayIdx };
+  return { dates: week, dayIdx };
 }
 
 function ReminderCard({ reminder }) {
@@ -115,9 +113,36 @@ function ReminderCard({ reminder }) {
 }
 
 export default function Reminders() {
-  const { dates, todayIdx } = getCurrentWeek();
-  const [selectedDay, setSelectedDay] = useState(todayIdx);
+  // activeDate drives both the highlighted day and which week is shown
+  const [activeDate, setActiveDate] = useState(() => new Date());
+  const { dates, dayIdx: selectedDay } = getWeekFor(activeDate);
   const { tasks } = useUser();
+
+  const goToPrevDay = () => {
+    setActiveDate((prev) => {
+      const next = new Date(prev);
+      next.setDate(prev.getDate() - 1);
+      return next;
+    });
+  };
+
+  const goToNextDay = () => {
+    setActiveDate((prev) => {
+      const next = new Date(prev);
+      next.setDate(prev.getDate() + 1);
+      return next;
+    });
+  };
+
+  const selectDay = (dayIdxClicked) => {
+    // Move activeDate to the clicked day within the currently displayed week
+    setActiveDate((prev) => {
+      const diff = dayIdxClicked - prev.getDay();
+      const next = new Date(prev);
+      next.setDate(prev.getDate() + diff);
+      return next;
+    });
+  };
 
   return (
     <div>
@@ -125,9 +150,9 @@ export default function Reminders() {
       {/* Header */}
       <div className="bg-white flex flex-col md:flex-row items-center justify-between rounded-2xl p-4 shadow-md mb-4">
         <h1 className="font-bold text-2xl">Reminders</h1>
-        <button className="flex flex-row p-2 bg-blue-400 rounded-2xl gap-2 transition-all duration-300 hover:bg-blue-600">
+        <button className="flex flex-row p-2 bg-blue-400 rounded-2xl gap-2 transition-all duration-300 hover:bg-blue-600 hover:shadow-xl">
           <IoMdAdd size={24} className="text-white"/>
-          <h1 className="font-bold text-white">Quick Add Task</h1>
+          <h1 className="font-bold text-white">Quick Add Reminder</h1>
         </button>
       </div>
 
@@ -136,10 +161,16 @@ export default function Reminders() {
         <div className="flex flex-row items-center justify-between mb-4">
           <h2 className="font-bold text-xl">Interactive Deadline Hub</h2>
           <div className="flex flex-row gap-2">
-            <button className="p-2 rounded-xl bg-gray-300 transition-all duration-200 hover:bg-gray-400">
+            <button
+              className="p-2 rounded-xl bg-gray-300 transition-all duration-200 hover:bg-gray-400"
+              onClick={goToPrevDay}
+            >
               <IoIosArrowBack size={20}/>
             </button>
-            <button className="p-2 rounded-xl bg-gray-300 transition-all duration-200 hover:bg-gray-400">
+            <button
+              className="p-2 rounded-xl bg-gray-300 transition-all duration-200 hover:bg-gray-400"
+              onClick={goToNextDay}
+            >
               <IoIosArrowForward size={20}/>
             </button>
           </div>
@@ -151,7 +182,7 @@ export default function Reminders() {
             <button
               key={day}
               className={`week-day ${selectedDay === i ? "week-day--active" : ""}`}
-              onClick={() => setSelectedDay(i)}
+              onClick={() => selectDay(i)}
             >
               <span className="week-day__name">{day}</span>
               <span className="week-day__date">{dates[i]}</span>
@@ -170,4 +201,3 @@ export default function Reminders() {
     </div>
   );
 }
-
