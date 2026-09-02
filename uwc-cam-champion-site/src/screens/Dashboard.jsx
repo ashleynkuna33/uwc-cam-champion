@@ -21,6 +21,23 @@ function priorityColor(priority){
   }
 }
 
+function getStatusColor(status) {
+  const normalized = String(status ?? "Not Started").trim().toLowerCase();
+
+  if (normalized.includes("completed") || normalized.includes("done")) {
+    return "#10b981";
+  }
+
+  if (normalized.includes("in progress") || normalized.includes("active") || normalized.includes("ongoing")) {
+    return "#ff9f1c";
+  }
+
+  if (normalized.includes("not started") || normalized.includes("pending")) {
+    return "#1e9bff";
+  }
+
+  return "#1e9bff";
+}
 
 export default function Dashboard({ onSomeAction }) {
   const { user, modules = [], tasks = [], cam: contextCam, setCam } = useUser();
@@ -80,7 +97,7 @@ export default function Dashboard({ onSomeAction }) {
     score: Number(module.score ?? module.currentCam ?? module.cam ?? 0),
     progress: Number(module.progress ?? 0),
     status: module.status ?? "Not Started",
-    statusColor: module.statusColor ?? "#e5e7eb",
+    statusColor: module.statusColor ?? getStatusColor(module.status ?? "Not Started"),
   }));
 
   // const deadlines = [
@@ -198,25 +215,27 @@ export default function Dashboard({ onSomeAction }) {
             </button>
           </div>
 
-          <div className="modules-grid">
-            {moduleCards.map((module) => (
-              <article className="module-summary-card" key={module.id}>
-                <div className="module-summary-top">
-                  <span className="module-chip">{module.code}</span>
-                  <span className="status-pill" style={{ background: module.statusColor }}>
-                    {module.status}
-                  </span>
-                </div>
-                <h3>{module.name}</h3>
-                <p className="module-score">{module.score.toFixed(2)}%</p>
-                <div className="progress-bar">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${module.progress}%` }}
-                  />
-                </div>
-              </article>
-            ))}
+          <div className="modules-slider">
+            <div className="modules-grid">
+              {moduleCards.map((module) => (
+                <article className="module-summary-card" key={module.id}>
+                  <div className="module-summary-top">
+                    <span className="module-chip">{module.code}</span>
+                    <span className="status-pill" style={{ background: module.statusColor }}>
+                      {module.status}
+                    </span>
+                  </div>
+                  <h3>{module.name}</h3>
+                  <p className="module-score">{module.score.toFixed(2)}%</p>
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{ width: `${module.progress}%` }}
+                    />
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
       </main>
