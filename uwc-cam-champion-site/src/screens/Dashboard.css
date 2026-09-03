@@ -142,16 +142,21 @@
 }
 
 .donut-chart {
-  background: conic-gradient(#ff9f1c 0deg 95deg, #1e9bff 95deg 210deg, #edf2f7 210deg 360deg);
+  overflow: visible;
 }
 
-.donut-chart::after,
 .progress-ring::after {
   content: "";
   position: absolute;
   inset: 24px;
   border-radius: 50%;
   background: #f8fafc;
+}
+
+.donut-segment {
+  transform: rotate(-90deg);
+  transform-origin: 60px 60px;
+  transition: stroke-dasharray 500ms ease, stroke-dashoffset 500ms ease;
 }
 
 .progress-ring {
@@ -369,7 +374,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #1e9bff;
+  background: #1897ff;
 }
 
 .summary-panel {
@@ -412,7 +417,7 @@
 
 .deadline-item {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-columns: 72px minmax(180px, 1.8fr) minmax(150px, 1fr) minmax(80px, 0.7fr) auto;
   gap: 12px;
   align-items: center;
   padding: 14px 0;
@@ -430,12 +435,21 @@
 }
 
 .deadline-item p {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: 14px;
 }
 
 .deadline-item small {
-  color: #6b7280;
+  color: #252525;
+}
+
+.deadline-module {
+  color: #1e3ed4;
+  font-weight: 600;
+}
+
+.deadline-status {
+  white-space: nowrap;
 }
 
 .deadline-pill {
@@ -458,5 +472,21 @@
 
   .summary-panel {
     order: -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .deadline-item {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+  }
+
+  .deadline-module,
+  .deadline-status {
+    grid-column: 2;
+  }
+
+  .deadline-pill {
+    grid-column: 3;
+    grid-row: 1 / span 3;
   }
 }

@@ -21,6 +21,28 @@ function priorityColor(priority){
   }
 }
 
+function getPriorityForDueDate(isoDateString) {
+  const [year, month, day] = String(isoDateString).split("-").map(Number);
+  const dueDate = Date.UTC(year, month - 1, day);
+  const today = new Date();
+  const todayDate = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  const daysUntilDue = Math.ceil((dueDate - todayDate) / (1000 * 60 * 60 * 24));
+
+  if (!Number.isFinite(daysUntilDue)) {
+    return "Medium";
+  }
+
+  if (daysUntilDue <= 3) {
+    return "High";
+  }
+
+  if (daysUntilDue <= 7) {
+    return "Medium";
+  }
+
+  return "Low";
+}
+
 function getStatusColor(status) {
   const normalized = String(status ?? "Not Started").trim().toLowerCase();
 
@@ -39,13 +61,47 @@ function getStatusColor(status) {
   return "#1e9bff";
 }
 
+function getModuleStatus(module) {
+  const completedValue = module.is_completed ?? module.isCompleted;
+  const isCompleted = completedValue === true || completedValue === 1 ||
+    String(completedValue).trim().toLowerCase() === "true" ||
+    String(completedValue).trim() === "1";
+
+  if (isCompleted) {
+    return "completed";
+  }
+
+  const currentCam = Number(module.current_cam ?? module.currentCam ?? module.score ?? module.cam);
+  if (Number.isFinite(currentCam)) {
+    return currentCam > 0 ? "inProgress" : "notStarted";
+  }
+
+  const normalized = String(module.status ?? "").trim().toLowerCase().replace(/[_-]+/g, " ");
+
+  if (normalized.includes("completed") || normalized.includes("done")) {
+    return "completed";
+  }
+
+  if (normalized.includes("in progress") || normalized.includes("active") || normalized.includes("ongoing")) {
+    return "inProgress";
+  }
+
+  return "notStarted";
+}
+
+function getStatusLabel(status) {
+  if (status === "completed") return "Completed";
+  if (status === "inProgress") return "In Progress";
+  return "Not Started";
+}
+
 export default function Dashboard({ onSomeAction }) {
   const { user, modules = [], tasks = [], cam: contextCam, setCam } = useUser();
 
   const moduleAverageCam = modules.length
     ? Math.round(
         modules.reduce((total, module) => {
-          const score = Number(module.score ?? module.currentCam ?? module.cam ?? 0);
+          const score = Number(module.score ?? module.current_cam ?? module.currentCam ?? module.cam ?? 0);
           return total + (Number.isFinite(score) ? score : 0);
         }, 0) / modules.length
       )
@@ -60,45 +116,70 @@ export default function Dashboard({ onSomeAction }) {
   }, [contextCam, moduleAverageCam, setCam]);
 
   const rawStats = {
-    inProgress: modules.filter((module) => {
-      const status = String(module.status ?? "").toLowerCase();
-      return status.includes("active") || status.includes("in progress") || status.includes("ongoing");
-    }).length,
-    completed: modules.filter((module) => {
-      const status = String(module.status ?? "").toLowerCase();
-      return status.includes("completed") || status.includes("done");
-    }).length,
-    notStarted: modules.filter((module) => {
-      const status = String(module.status ?? "").toLowerCase();
-      return status.includes("not started") || status.includes("pending");
-    }).length,
+    inProgress: modules.filter((module) => getModuleStatus(module) === "inProgress").length,
+    completed: modules.filter((module) => getModuleStatus(module) === "completed").length,
+    notStarted: modules.filter((module) => getModuleStatus(module) === "notStarted").length,
   };
 
   const stats = [
     { label: "In Progress", value: rawStats.inProgress, color: "#ff9f1c" },
     { label: "Completed", value: rawStats.completed, color: "#1e9bff" },
-    { label: "Not Started", value: rawStats.notStarted, color: "#e5e7eb" },
+    { label: "Not Started", value: rawStats.notStarted, color: "#0F766E" },
   ];
+
+  const totalModuleCount = stats.reduce((total, item) => total + item.value, 0);
+  const chartRadius = 50;
+  const chartCircumference = 2 * Math.PI * chartRadius;
+
+  let chartOffset = 0;
+  const chartSegments = stats.map((item) => {
+    const segmentLength = totalModuleCount
+      ? (item.value / totalModuleCount) * chartCircumference
+      : 0;
+    const segment = {
+      ...item,
+      length: segmentLength,
+      offset: chartOffset,
+    };
+    chartOffset += segmentLength;
+    return segment;
+  });
 
   const deadlines = tasks
     .filter((task) => task?.dueDate)
     .slice(0, 4)
-    .map((task) => ({
-      date: task.dueDate,
-      title: task.title,
-      dueInfo: task.status ?? "Due soon",
-      priority: task.priority ?? (task.status?.includes("Past Due") ? "High" : "Medium"),
-    }));
+    .map((task) => {
+      const module = modules.find((item) =>
+        item.moduleCode === task.moduleCode || item.code === task.moduleCode
+      );
+      const moduleInfo = task.moduleInfo ?? {};
 
-  const moduleCards = modules.map((module) => ({
-    id: module.id,
-    code: module.moduleCode ?? module.code ?? "",
-    name: module.moduleName ?? module.name ?? "",
-    score: Number(module.score ?? module.currentCam ?? module.cam ?? 0),
-    progress: Number(module.progress ?? 0),
-    status: module.status ?? "Not Started",
-    statusColor: module.statusColor ?? getStatusColor(module.status ?? "Not Started"),
-  }));
+      return {
+        date: task.dueDate,
+        title: task.title ?? task.name ?? task.subName ?? task.type ?? "Untitled task",
+        moduleCode: task.moduleCode ?? moduleInfo.moduleCode ?? module?.moduleCode ?? module?.code ?? "",
+        moduleName: task.moduleName ?? moduleInfo.moduleName ?? moduleInfo.name ?? module?.moduleName ?? module?.name ?? "Module",
+        dueInfo: task.status ?? "Due soon",
+        priority: getPriorityForDueDate(task.dueDate),
+      };
+    });
+
+  const moduleCards = modules.map((module) => {
+    const score = Number(module.score ?? module.current_cam ?? module.currentCam ?? module.cam ?? 0);
+    const storedProgress = Number(module.progress);
+    const progress = storedProgress > 0 ? storedProgress : score;
+    const status = getModuleStatus(module);
+
+    return {
+      id: module.id,
+      code: module.moduleCode ?? module.code ?? "",
+      name: module.moduleName ?? module.name ?? module.title ?? module.moduleInfo?.name ?? module.moduleInfo?.title ?? module.moduleCode ?? module.code ?? "Unnamed module",
+      score,
+      progress: Math.min(Math.max(Number.isFinite(progress) ? progress : 0, 0), 100),
+      status: getStatusLabel(status),
+      statusColor: module.statusColor ?? getStatusColor(status),
+    };
+  });
 
   // const deadlines = [
   //   {
@@ -148,7 +229,29 @@ export default function Dashboard({ onSomeAction }) {
             </div>
 
             <div className="module-chart">
-              <div className="donut-chart" />
+              <svg
+                className="donut-chart"
+                viewBox="0 0 120 120"
+                role="img"
+                aria-label={`${rawStats.inProgress} in progress, ${rawStats.completed} completed, ${rawStats.notStarted} not started`}
+              > 
+                <circle className = "donut-track" cx ="60" cy="60" r={chartRadius} fill="none" stroke="#e5e7eb" strokeWidth="16" />
+                {chartSegments.map((segment) => (
+                  <circle
+                    key={segment.label}
+                    className="donut-segment"
+                    cx="60"
+                    cy="60"
+                    r={chartRadius}
+                    fill="none"
+                    stroke={segment.color}
+                    strokeWidth="16"
+                    strokeLinecap="butt"
+                    strokeDasharray={`${segment.length} ${chartCircumference}`}
+                    strokeDashoffset={-segment.offset}
+                  />
+                ))}
+              </svg>
             </div>
 
             <ul className="legend-list">
@@ -163,7 +266,7 @@ export default function Dashboard({ onSomeAction }) {
               ))}
             </ul>
 
-            <p className="overview-footer">Total Modules: {modules.length}</p>
+            <p className="overview-footer">Total Modules: {totalModuleCount}</p>
           </article>
 
           <article className="dashboard-card progress-card">
@@ -254,10 +357,11 @@ export default function Dashboard({ onSomeAction }) {
           {deadlines.map((deadline) => (
             <div className="deadline-item" key={deadline.date + deadline.title}>
               <span className="deadline-date">{formatDeadlineDate(deadline.date)}</span>
-              <div>
-                <p>{deadline.title}</p>
-                <small>{deadline.dueInfo}</small>
-              </div>
+              <p className="deadline-task">{deadline.title}</p>
+              <small className="deadline-module">
+                {deadline.moduleCode ? `${deadline.moduleCode} - ` : ""}{deadline.moduleName}
+              </small>
+              <small className="deadline-status">{deadline.dueInfo}</small>
               <span className="deadline-pill" style={{ background: priorityColor(deadline.priority)}}>
                 {deadline.priority} Priority
               </span>
