@@ -1,23 +1,23 @@
 import { Plus } from "lucide-react";
 import { useEffect } from "react";
 import { useUser } from "../context/UserContext";
-import "./Dashboard.css";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // formats date string like "2026-06-10" into "Jun 10"
-function formatDeadlineDate(isoDateString){
-  const[, month, day] = isoDateString.split("-").map(Number);
-  return `${MONTHS[month-1]} ${day}`;
+function formatDeadlineDate(isoDateString) {
+  const [, month, day] = isoDateString.split("-").map(Number);
+  return `${MONTHS[month - 1]} ${day}`;
 }
-function priorityColor(priority){
-  switch (priority){
+
+function priorityColor(priority) {
+  switch (priority) {
     case "High":
-      return "#ef4444"
+      return "#ef4444";
     case "Low":
-      return "#22c55e"
+      return "#22c55e";
     default:
-      return "#f59e0b" // Medium or anything else unexpected
+      return "#f59e0b"; // Medium or anything else unexpected
   }
 }
 
@@ -171,7 +171,7 @@ export default function Dashboard({ onSomeAction }) {
     const status = getModuleStatus(module);
 
     return {
-      id: module.id,
+      id: module.id ?? module.moduleCode ?? module.code ?? `${module.moduleName ?? module.name ?? "module"}-${Math.random().toString(36).slice(2)}`,
       code: module.moduleCode ?? module.code ?? "",
       name: module.moduleName ?? module.name ?? module.title ?? module.moduleInfo?.name ?? module.moduleInfo?.title ?? module.moduleCode ?? module.code ?? "Unnamed module",
       score,
@@ -181,65 +181,39 @@ export default function Dashboard({ onSomeAction }) {
     };
   });
 
-  // const deadlines = [
-  //   {
-  //     date: "Jun 10",
-  //     title: "Database Systems - Assignment 1",
-  //     due: "Due in 3 days",
-  //     priority: "High Priority",
-  //     color: "#ef4444",
-  //   },
-  //   {
-  //     date: "Jun 12",
-  //     title: "Database Systems - Assignment 2",
-  //     due: "Due in 5 days",
-  //     priority: "Medium Priority",
-  //     color: "#f59e0b",
-  //   },
-  //   {
-  //     date: "Sep 15",
-  //     title: "Software Engineering - Project ",
-  //     due: "Due in 2 months",
-  //     priority: "Medium Priority",
-  //     color: "#f59e0b",
-  //   },
-  //   {
-  //     date: "Jun 18",
-  //     title: "Artificial Intelligence - Quiz 2",
-  //     due: "Due in 11 days",
-  //     priority: "Low Priority",
-  //     color: "#22c55e",
-  //   },
-  // ];
-
   return (
-    <div className="dashboard-layout">
-      <main className="dashboard-main">
-        <section className="dashboard-header">
-          <div>
-            <h3 className="small-label">Dashboard</h3>
-            <p>Welcome back, {user?.name || "UWC Champion"}!</p>
-          </div>
+    <div className="min-h-screen flex flex-col gap-6 p-6 bg-[#eef4ff] text-gray-900 box-border">
+      <div className="flex flex-col gap-6 min-w-0">
+        <section className="p-6 bg-white rounded-[28px] border border-gray-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+          <h3 className="m-0 mb-2 text-sm text-blue-600 font-bold">Dashboard</h3>
+          <p className="m-0 text-[32px] leading-tight">Welcome back, {user?.name || "UWC Champion"}!</p>
         </section>
-        <section className="top-cards">
-          <article className="dashboard-card overview-card">
-            <div className="card-header">
-              <h3>Module Overview</h3>
-              <button aria-label="Open module overview" onClick={() => onSomeAction("Module Detail")}>↗</button>
+
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-0">
+          {/* Module Overview */}
+          <article className="p-6 flex flex-col gap-5 bg-white rounded-[28px] border border-gray-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="m-0 text-lg">Module Overview</h3>
+              <button
+                aria-label="Open module overview"
+                onClick={() => onSomeAction("Module Detail")}
+                className="w-[34px] h-[34px] border border-[#d1dbf1] rounded-full bg-[#f8fafc] cursor-pointer text-[#1e3ed4]"
+              >
+                ↗
+              </button>
             </div>
 
-            <div className="module-chart">
+            <div className="flex justify-center items-center">
               <svg
-                className="donut-chart"
+                className="w-[140px] h-[140px] rounded-full overflow-visible"
                 viewBox="0 0 120 120"
                 role="img"
                 aria-label={`${rawStats.inProgress} in progress, ${rawStats.completed} completed, ${rawStats.notStarted} not started`}
-              > 
-                <circle className = "donut-track" cx ="60" cy="60" r={chartRadius} fill="none" stroke="#e5e7eb" strokeWidth="16" />
+              >
+                <circle cx="60" cy="60" r={chartRadius} fill="none" stroke="#e5e7eb" strokeWidth="16" />
                 {chartSegments.map((segment) => (
                   <circle
                     key={segment.label}
-                    className="donut-segment"
                     cx="60"
                     cy="60"
                     r={chartRadius}
@@ -249,126 +223,187 @@ export default function Dashboard({ onSomeAction }) {
                     strokeLinecap="butt"
                     strokeDasharray={`${segment.length} ${chartCircumference}`}
                     strokeDashoffset={-segment.offset}
+                    style={{
+                      transform: "rotate(-90deg)",
+                      transformOrigin: "60px 60px",
+                      transition: "stroke-dasharray 500ms ease, stroke-dashoffset 500ms ease",
+                    }}
                   />
                 ))}
               </svg>
             </div>
 
-            <ul className="legend-list">
+            <ul className="list-none m-0 p-0 grid gap-3.5">
               {stats.map((item) => (
-                <li key={item.label}>
-                  <span className="legend-dot" style={{ background: item.color }} />
+                <li key={item.label} className="flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ background: item.color }} />
                   <div>
-                    <p>{item.label}</p>
-                    <strong>{item.value}</strong>
+                    <p className="m-0">{item.label}</p>
+                    <strong className="m-0">{item.value}</strong>
                   </div>
                 </li>
               ))}
             </ul>
 
-            <p className="overview-footer">Total Modules: {totalModuleCount}</p>
+            <p className="m-0 text-[13px] text-gray-500">Total Modules: {totalModuleCount}</p>
           </article>
 
-          <article className="dashboard-card progress-card">
-            <div className="card-header">
-              <h3>Overall CAM Progress</h3>
-              <button aria-label="Open overall CAM progress" onClick={() => onSomeAction("Progress & Projections")} >↗</button>
+          {/* Overall CAM Progress */}
+          <article className="p-6 flex flex-col gap-5 bg-white rounded-[28px] border border-gray-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="m-0 text-lg">Overall CAM Progress</h3>
+              <button
+                aria-label="Open overall CAM progress"
+                onClick={() => onSomeAction("Progress & Projections")}
+                className="w-[34px] h-[34px] border border-[#d1dbf1] rounded-full bg-[#f8fafc] cursor-pointer text-[#1e3ed4]"
+              >
+                ↗
+              </button>
             </div>
 
-            <div className="progress-circle">
+            <div className="flex justify-center items-center">
               <div
-                className="progress-ring"
+                className="relative w-[140px] h-[140px] rounded-full bg-gray-200"
                 style={{
                   background: `conic-gradient(#1e9bff 0deg ${cam * 3.6}deg, #e5e7eb ${cam * 3.6}deg 360deg)`,
                 }}
               >
-                <span>{cam}%</span>
-                
+                <span className="absolute inset-[34px] grid place-items-center rounded-full bg-white font-bold text-gray-900">
+                  {cam}%
+                </span>
               </div>
             </div>
 
-            <p className="card-description">Your overall CAM progress across all modules is {cam}%.</p>
-            <span className={`status-pill ${cam > 0 ? "good" : "no-data"}`}>
+            <p className="m-0 text-gray-600 leading-relaxed">
+              Your overall CAM progress across all modules is {cam}%.
+            </p>
+            <span
+              className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-full text-xs font-bold text-white w-fit ${
+                cam > 0 ? "bg-emerald-500" : "bg-[#84a09a]"
+              }`}
+            >
               {cam > 0 ? "Good Standing" : "No Data"}
             </span>
           </article>
 
-          <article className="dashboard-card quick-add-card">
-            <div className="card-header">
-              <h3>Quick Add</h3>
-              <button aria-label="Open quick add" onClick={() => onSomeAction("Assessments")} >↗</button>
+          {/* Quick Add */}
+          <article className="p-6 flex flex-col gap-5 items-center text-center bg-white rounded-[28px] border border-gray-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+            <div className="flex items-center justify-between gap-3 w-full">
+              <h3 className="m-0 text-lg">Quick Add</h3>
+              <button
+                aria-label="Open quick add"
+                onClick={() => onSomeAction("Assessments")}
+                className="w-[34px] h-[34px] border border-[#d1dbf1] rounded-full bg-[#f8fafc] cursor-pointer text-[#1e3ed4]"
+              >
+                ↗
+              </button>
             </div>
 
-            <button type="button" className="quick-add-circle" aria-label="Add module" onClick={() => onSomeAction("Module Detail")}>
-              <Plus size={40}/>
+            <button
+              type="button"
+              aria-label="Add module"
+              onClick={() => onSomeAction("Module Detail")}
+              className="w-[120px] h-[120px] rounded-3xl border-2 border-dashed border-[#d1dbf1] bg-[#f8fafc] text-[#1e3ed4] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#eff6ff] hover:border-[#1e3ed4] hover:scale-105 hover:shadow-[0_4px_12px_rgba(30,62,212,0.15)] active:scale-[0.98] focus:outline-none focus:shadow-[0_0_0_3px_rgba(30,62,212,0.1),0_4px_12px_rgba(30,62,212,0.15)]"
+            >
+              <Plus size={40} />
             </button>
 
-            <p className="card-description">Quickly add a new module or update your progress.</p>
-            <button type="button" className="primary-button" onClick={() =>onSomeAction("Module Detail")}>
+            <p className="m-0 text-gray-600 leading-relaxed">
+              Quickly add a new module or update your progress.
+            </p>
+            <button
+              type="button"
+              onClick={() => onSomeAction("Module Detail")}
+              className="w-full py-3.5 px-4.5 border-none rounded-2xl bg-[#1e9bff] text-white font-bold cursor-pointer"
+            >
               Add Module
             </button>
           </article>
         </section>
 
-        <section className="modules-section">
-          <div className="section-header">
-            <h2>My Modules</h2>
-            <button onClick={() => onSomeAction("Module Detail")} className="font-bold text-blue-600 hover:underline transition-all duration-200 cursor-pointer">
+        <section className="flex flex-col gap-4.5">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="m-0 text-[22px]">My Modules</h2>
+            <button
+              onClick={() => onSomeAction("Module Detail")}
+              className="font-bold text-blue-600 hover:underline transition-all duration-200 cursor-pointer"
+            >
               View all modules
             </button>
           </div>
 
-          <div className="modules-slider">
-            <div className="modules-grid">
-              {moduleCards.map((module) => (
-                <article className="module-summary-card" key={module.id}>
-                  <div className="module-summary-top">
-                    <span className="module-chip">{module.code}</span>
-                    <span className="status-pill" style={{ background: module.statusColor }}>
-                      {module.status}
-                    </span>
-                  </div>
-                  <h3>{module.name}</h3>
-                  <p className="module-score">{module.score.toFixed(2)}%</p>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${module.progress}%` }}
-                    />
-                  </div>
-                </article>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4.5">
+            {moduleCards.map((module) => (
+              <article
+                key={module.id}
+                className="w-full p-5.5 rounded-3xl bg-[#f8fbff] flex flex-col gap-4.5"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="px-3 py-2 rounded-2xl bg-[#eff6ff] text-[#1e3ed4] text-xs font-bold">
+                    {module.code}
+                  </span>
+                  <span
+                    className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-full text-xs font-bold text-white"
+                    style={{ background: module.statusColor }}
+                  >
+                    {module.status}
+                  </span>
+                </div>
+                <h3 className="m-0 text-lg">{module.name}</h3>
+                <p className="m-0 font-bold text-[#1e3ed4]">{module.score.toFixed(2)}%</p>
+                <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#1897ff]"
+                    style={{ width: `${module.progress}%` }}
+                  />
+                </div>
+              </article>
+            ))}
           </div>
         </section>
-      </main>
+      </div>
 
-      <aside className="summary-panel">
-        <article className="summary-card">
-          <h3>Top Summary</h3>
-          <p>Quick snapshot of your academic progress helps you know your overall status at a glance.</p>
-        </article>
+      <article className="p-6 flex flex-col gap-3.5 bg-white rounded-[28px] border border-gray-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <h3 className="m-0 text-lg">Top Summary</h3>
+        <p className="m-0 text-gray-600 leading-relaxed">
+          Quick snapshot of your academic progress helps you know your overall status at a glance.
+        </p>
+      </article>
 
-        <article className="summary-card">
-          <div className="summary-card-header">
-            <h3>Upcoming Deadlines</h3>
-            <button onClick={() => onSomeAction("Reminders")} className="font-bold text-blue-600 hover:underline transition-all duration-200 cursor-pointer">View calendar</button>
+      <article className="p-6 flex flex-col gap-3.5 bg-white rounded-[28px] border border-gray-200 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="m-0 text-lg">Upcoming Deadlines</h3>
+          <button
+            onClick={() => onSomeAction("Reminders")}
+            className="font-bold text-blue-600 hover:underline transition-all duration-200 cursor-pointer"
+          >
+            View calendar
+          </button>
+        </div>
+        {deadlines.map((deadline) => (
+          <div
+            key={deadline.date + deadline.title}
+            className="grid grid-cols-[72px_minmax(180px,1.8fr)_minmax(100px,0.6fr)_minmax(100px,0.6fr)_auto] gap-4 items-center py-3.5 border-t border-[#eef2ff] first:border-t-0"
+          >
+            <span className="text-[13px] font-bold text-[#1e3ed4]">
+              {formatDeadlineDate(deadline.date)}
+            </span>
+            <p className="m-0 text-sm">{deadline.title}</p>
+            <span className="text-sm text-gray-800">
+              {deadline.moduleCode}
+            </span>
+            <span className="text-sm text-gray-500">
+              {deadline.dueInfo}
+            </span>
+            <span
+              className="inline-flex px-3.5 py-1.5 rounded-full text-white text-xs font-bold whitespace-nowrap"
+              style={{ background: priorityColor(deadline.priority) }}
+            >
+              {deadline.priority} Priority
+            </span>
           </div>
-          {deadlines.map((deadline) => (
-            <div className="deadline-item" key={deadline.date + deadline.title}>
-              <span className="deadline-date">{formatDeadlineDate(deadline.date)}</span>
-              <p className="deadline-task">{deadline.title}</p>
-              <small className="deadline-module">
-                {deadline.moduleCode ? `${deadline.moduleCode} - ` : ""}{deadline.moduleName}
-              </small>
-              <small className="deadline-status">{deadline.dueInfo}</small>
-              <span className="deadline-pill" style={{ background: priorityColor(deadline.priority)}}>
-                {deadline.priority} Priority
-              </span>
-            </div>
-          ))}
-        </article>
-      </aside>
+        ))}
+      </article>
     </div>
   );
 }

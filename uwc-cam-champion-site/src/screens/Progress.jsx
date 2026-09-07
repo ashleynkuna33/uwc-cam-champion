@@ -99,22 +99,23 @@ function Progress() {
     let cancelled = false;
 
     async function loadModules() {
-      try {
-        setLoadingModules(true);
-        setError(null);
-        const dashboard = await fetchDashboard(userId);
-        if (cancelled) return;
-        const modules = dashboard?.moduleCards ?? dashboard?.modules ?? [];
-        setModuleList(modules);
-        if (modules.length > 0) {
-          setSelectedModuleId((prev) => prev ?? modules[0].id);
-        }
-      } catch (err) {
-        if (!cancelled) setError(err.message || "Failed to load modules");
-      } finally {
-        if (!cancelled) setLoadingModules(false);
-      }
+  try {
+    setLoadingModules(true);
+    setError(null);
+    const dashboard = await fetchDashboard(userId);
+    if (cancelled) return;
+    const modules = dashboard?.moduleCards ?? dashboard?.modules ?? [];
+    setModuleList(modules);
+    if (modules.length > 0) {
+      setSelectedModuleId((prev) => prev ?? modules[0].id);
     }
+  } catch (err) {
+    console.error("fetchDashboard failed:", err);
+    if (!cancelled) setError(err.message || "Failed to load modules");
+  } finally {
+    if (!cancelled) setLoadingModules(false);
+  }
+}
 
     loadModules();
     return () => {
